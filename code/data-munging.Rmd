@@ -1,0 +1,24 @@
+---
+title: "Introductory Data Munging in R"
+author: "Ken Oung Yong Quan"
+date: "23 July 2016"
+output: html_document
+---
+# Importing Data
+We will be using a sample DMEF dataset.
+
+```{r}
+# Navigating to your working directory (GUI)
+setwd("C:/Users/Ken/Dropbox/Academics/2015/1BT1101/BIZ Analytics/Group Project/data")
+
+# Loading the file
+
+``
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
