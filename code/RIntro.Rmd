@@ -291,11 +291,18 @@ Since we've been looking at price so much, was there a difference in the prices 
 ```{r}
 returned.object.price <- uniq.object.price[PRODUCT_NO %in% returned[, PRODUCT_NO]]
 not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]
+```
 
+Now, we'll introduce you to another type of plot you'll encounter quite often: the box plot. The box plot shows the distribution of the dataset, with the center line representing the mean, the top and bottom of the box representing the 25th and 75th percentile respectively. Additional points outside the box represent outliers. Since a box plot is used to compare distributions, it takes in two data vectors. As usual, to find out more you can type ```?boxplot``` into your console.
+
+```{r}
 # Any difference in price distribution?
 boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE])
+```
 
-# Well clearly there are too many outliers. Let's ignore the outliers.
+Well clearly there are too many outliers. Let's ignore the outliers.
+
+```{r}
 boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
         main = "Product Prices for Returned vs Not Returned Goods",
         names = c("returned", "not returned"),
@@ -312,6 +319,7 @@ boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
         main = "Extended Prices for Returned vs Not Returned Goods",
         names = c("Returned", "Not Returned"))
 ```
+
 Interestingly, after accounting for outliers, it appears that returned goods tend to be in larger orders than non-returned goods. This might indicate that customers who make larger purchases tend to return goods more, or that customers who like to return goods tend to buy more.
 
 ### Product Categories
