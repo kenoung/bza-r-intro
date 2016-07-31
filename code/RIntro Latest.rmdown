@@ -233,7 +233,7 @@ hist(uniq.object.price[PRICE < 100, PRICE], breaks=100,
 
 Looks like the prices bunch around certain values. Let's try to break this down, and look at the the ending number for the price. To do that, we define a function in r, which removes the decimal place, and then find the remainder when divided by 10, giving the ones place digit. After that, we'll add a new column for the ones place, and plot the histogram.
 
-```{r, results='hold'}
+```{r}
 LastDigit <- function(x) { (x - x%%1) %% 10 }
 
 # Add a new col ONES.PLACE
@@ -315,50 +315,16 @@ boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
 Interestingly, after accounting for outliers, it appears that returned goods tend to be in larger orders than non-returned goods. This might indicate that the people who return their goods might be willing to make larger orders in the knowledge that they could return them later on.
 
 ### Product Categories
-Now, let's take a look at which product categories tend to have the highest rate of returns. Firstly, we'll use a bar plot to show the proportion of returned goods that came from that product category. Let's sort the data by getting the count of returned goods per product category. In fact, let's just directly convert the data to percentage of returned goods for each product category.
+
+Now, let's take a look at which product categories tend to have the highest rate of returns. Firstly, we'll use a bar plot to show the proportion of returned goods that came from that product category.
 
 ```{r}
-bar1 <- returned[, .N/nrow(returned) * 100, by = PRODUCT_CATEGORY_ID]
-
-#Now, let's plot the bar chart using the percentage values.
-
-barplot(bar1[,V1], names = bar1[,PRODUCT_CATEGORY_ID])
+barplot(returned[, .N, by = PRODUCT_CATEGORY_ID]/ nrow(returned) *100)
 ```
-
-Next, we will do the same for non-returned goods.
 
 ```{r}
-#We'll do the same conversion as we did with the returned goods.
-bar2 <- not.returned[, .N/nrow(not.returned) * 100, by = PRODUCT_CATEGORY_ID]
+barplot(table(not.returned[, PRODUCT_CATEGORY_ID])/ nrow(not.returned) *100)
 
-#The same goes for the bar plot.
-barplot(bar2[,V1], names = bar2[,PRODUCT_CATEGORY_ID])
-```
-
-When trying to compare data using bar plots, it helps if we can do an overlay to see their distributions with respect to each other, especially when the order of the bards are not sorted. Let's try that.
-
-Firstly, you'll realize that product category I has never been returned, and hence does not show up in the original. We'll just fix that by adding in an empty row for I, using the ```rbind``` function.
-
-```{r}
-#We'll start by sorting both the datasets based on the product category
-bar1 <- rbind(bar1, data.table(PRODUCT_CATEGORY_ID = "I", V1 = 0))
-bar1 <- bar1[order(PRODUCT_CATEGORY_ID)]
-bar2 <- bar2[order(PRODUCT_CATEGORY_ID)]
-```
-
-The ```order()``` function sorts the rows in a data table based on the specified column. In this case, the table is now sorted in ascending alphabetical order based on the product category ID. To sort it in descending order, you can simply use ```order(-PRODUCT_CATEGORY_ID)``` instead
-
-Next we'll plot the bar charts in an overlay. We'll also add in a legend for clarity.
-
-```{r, results="hold"}
-barplot(bar1[,V1], names = bar1[,PRODUCT_CATEGORY_ID], border = "darkblue", col = "darkblue",  density = 20, ylim = c(0, 30))
-par(new=TRUE)
-barplot(bar2[,V1], names = bar2[,PRODUCT_CATEGORY_ID], border = "red", col = "red", density = 20, ylim = c(0,30)) 
-legend("topright", legend = c("Returned", "Not Returned"), fill = c("darkblue", "red"))
-```
-
-
-```{R}
 # Percentage of good returned in each product category
 perc.returned.by.cat <- dmef_small[, .(Percentage.Returned=.SD[RETN_QTY>0, .N]/.N*100), by=PRODUCT_CATEGORY_ID]
 barplot(perc.returned.by.cat[, Percentage.Returned], 
