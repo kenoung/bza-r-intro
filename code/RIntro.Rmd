@@ -53,7 +53,6 @@ setwd("~/R Intro/bza-r-intro/code")
 dmef_dataset <- read.csv("~/R Intro/dmef_dataset.csv")
 ```
 
-
 So the code above loads the csv data and saved it to the 'dmef_dataset' variable.
 
 ## Getting A Feel
@@ -166,6 +165,9 @@ As some of you may have realized, we could have used this to find the unit price
 
 ```{r}
 head(ex1[,.(unit = sum(EXT_PRICE)/sum(QUANTITY)), by = PRODUCT_NO])
+```
+***
+```{r}
 head(unique_ex1)
 ```
 

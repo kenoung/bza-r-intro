@@ -1278,6 +1278,9 @@ head(unique_ex1[QUANTITY > 1])</code></pre>
 ## 5:     989973  49.95000
 ## 6:     989049 199.95000
 </code></pre>
+</div>
+<hr />
+<div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
@@ -1513,20 +1516,27 @@ nrow(returned)/nrow(dmef_small) * 100</code></pre>
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
 <pre style=""><code class="source r">returned.object.price <- uniq.object.price[PRODUCT_NO %in% returned[, PRODUCT_NO]]
-not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]
-
-# Any difference in price distribution?
+not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]</code></pre>
+</div>
+<p>Now, we'll introduce you to another type of plot you'll encounter quite often: the box plot. The box plot shows the distribution of the dataset, with the center line representing the mean, the top and bottom of the box representing the 25th and 75th percentile respectively. Additional points outside the box represent outliers. Since a box plot is used to compare distributions, it takes in two data vectors. As usual, to find out more you can type <code>?boxplot</code> into your console.</p>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r"># Any difference in price distribution?
 boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE])</code></pre>
 <div class="row">
 <div class="col-md-offset-3 col-md-6">
 <a href="#" class="thumbnail"><img src="data:image/png;base64,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" /></a>
 </div>
 </div>
+</div>
+<p>Well clearly there are too many outliers. Let's ignore the outliers.</p>
+<div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r"># Well clearly there are too many outliers. Let's ignore the outliers.
-boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
+<pre style=""><code class="source r">boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
         main = "Product Prices for Returned vs Not Returned Goods",
         names = c("returned", "not returned"),
         outline=F)</code></pre>
@@ -1634,7 +1644,7 @@ legend("top", legend = c("Returned", "Not Returned"), fill = c("darkblue", "red"
 </div>
 </div>
 <p>This all looks nice and stuff, but let's try to think what this chart means. Each barplot represents the distribution of returned and non-returned goods respectively. For example, we can see that products C, E, P and T were by far the most popular products based on volume of sales. However, take note of the small blue bars representing the number of returned goods for that product category. Although T has a marginally higher sales volume, C has a larger number of returned goods!</p>
-<p>Let's break that information further into a more easily understandable format, and ind out the percentage of goods returned for each product category.</p>
+<p>Let's break that information further into a more easily understandable format, and find out the percentage of goods returned for each product category.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source

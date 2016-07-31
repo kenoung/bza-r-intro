@@ -1,0 +1,302 @@
+<style>
+.midcenter {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+.small-code pre code {
+  font-size: 1em;
+}
+
+.big {
+  font-size: 10em;
+}
+</style>
+
+```{r setup, include=FALSE}
+opts_chunk$set(cache=TRUE)
+```
+
+Welcome to BT1101.1
+========================================================
+author: 
+date: 
+
+Introductions Are In Order
+========================================================
+transition: fade
+incremental: true
+
+- Ken Oung
+- Jun Weng
+- Zhen Xuan
+- Jin Wei
+- Rhynade
+- Selina
+- Jian Sheng
+
+Business Analytics
+========================================================
+transition: fade
+incremental: true
+- Descriptive Analytics
+- Predictive Analytics
+- Prescriptive Analytics
+
+What To Expect
+========================================================
+transition: fade
+incremental: true
+
+- RStudio Basics
+- Data Management
+- Data Visualization
+- Linear Regression
+
+You're on your own for these
+========================================================
+transition: fade
+incremental: true
+
+- Statistical Analysis
+- Logistic Regression
+- Excel
+
+Getting Started
+========================================================
+transition: fade
+title: false
+
+<div class="midcenter" style="margin-left:-112.5px; margin-top:-112.5px;">
+<img src="Rstudio.jpg"></img>
+</div>
+
+Importing Data
+========================================================
+incremental: true
+```{r}
+#Set your working directory to where all your files and codes are going to be saved.
+
+setwd("~/R Intro/bza-r-intro/code")
+```
+```{r}
+#Import the current dataset you'll be working with
+
+dmef_dataset <- read.csv("~/R Intro/dmef_dataset.csv")
+```
+
+Tabling Frames
+========================================================
+incremental: true
+```{r}
+class(dmef_dataset)
+
+library(data.table)
+
+dmef_dataset <- as.data.table(dmef_dataset)
+```
+```{r}
+class(dmef_dataset)
+```
+
+Sneak Peeks
+========================================================
+incremental: true
+class: small-code
+```{r}
+dmef_dataset
+```
+
+Let's Try That Again
+========================================================
+incremental:true
+```{r, results = "hide"}
+View(dmef_dataset)
+```
+
+Maybe Not All At Once
+========================================================
+incremental: true
+class:small-code
+```{r}
+summary(dmef_dataset)
+```
+
+Rows, Rows, Rows
+========================================================
+incremental: true
+class: small-code
+```data.table[rows, columns, by]```
+```{r}
+dmef_dataset[3:5]
+```
+
+Finding The One
+========================================================
+incremental: true
+class: small-code
+```{r}
+head(dmef_dataset[PRODUCT_NO %in% 987668])
+```
+
+But Two's Company
+========================================================
+incremental:true
+class: small-code
+```{r}
+head(dmef_dataset[PRODUCT_NO %in% c(987668, 989457)])
+```
+
+Discrimination
+========================================================
+incremental:true
+class: small-code
+```{r}
+head(dmef_dataset[EXT_PRICE < 30])
+```
+
+All Together Now
+========================================================
+incremental:true
+class: small-code
+```{r}
+head(dmef_dataset[EXT_PRICE<70 & PRODUCT_NO %in% c(987669, 989457)])
+```
+
+Columns.
+========================================================
+incremental:true
+```{r}
+dmef_dataset[,.(PRODUCT_NO, QUANTITY, EXT_PRICE)]
+
+ex1 <- dmef_dataset[,.(PRODUCT_NO, QUANTITY, EXT_PRICE)]
+```
+
+Look Ma, I'm Unique!
+========================================================
+incremental:true
+```{r}
+unique(ex1, by = "PRODUCT_NO")
+
+unique_ex1 <- unique(ex1, by = "PRODUCT_NO")
+```
+
+Writing Columns
+========================================================
+incremental:true
+```{r}
+unique_ex1 <- unique_ex1[, unit_price := EXT_PRICE/QUANTITY]
+
+```
+
+I Hope It Worked
+========================================================
+incremental:true
+```{r}
+head(unique_ex1[QUANTITY > 1])
+```
+
+Groupwork
+========================================================
+incremental:true
+```{r}
+head(ex1[,.(total = sum(EXT_PRICE)), by = PRODUCT_NO])
+```
+
+...Deja Vu?
+========================================================
+incremental:true
+class:small-code
+```{r}
+head(ex1[,.(unit = sum(EXT_PRICE)/sum(QUANTITY)), by = PRODUCT_NO])
+```
+***
+```{r}
+head(unique_ex1[,.(PRODUCT_NO, unit_price)])
+```
+
+Just Testing You Guys
+========================================================
+incremental:true
+```{r}
+ex1[PRODUCT_NO == 987668, .N, by = EXT_PRICE/QUANTITY]
+```
+
+Phase II
+========================================================
+```{r}
+dmef_small <- dmef_dataset[, .(ORDER_NO, ZIP, ORDER_LINE, PRODUCT_CATEGORY_ID, 
+                               CHANNEL, PRODUCT_NO, EXT_PRICE, QUANTITY, 
+                               RETN_QTY, RETN_REVENUE)]
+```
+
+Simple Histograms
+========================================================
+incremental:true
+class:small-code
+```{r}
+dmef_small[, PRICE := EXT_PRICE/QUANTITY]
+```
+```{r}
+object.price <- dmef_small[, .(PRODUCT_NO, PRODUCT_CATEGORY_ID, PRICE)]
+```
+```{r}
+unique(object.price, by = c("PRODUCT_NO", "PRICE"))
+uniq.object.price <- unique(object.price, by = c("PRODUCT_NO", "PRICE"))
+```
+
+All That, Just For This
+========================================================
+transition: fade
+```{r, fig.align='center'}
+hist(uniq.object.price[, PRICE],main = "Histogram of all prices",xlab = "Price")
+```
+
+Break It Down
+========================================================
+transition: fade
+```{r, fig.align='center'}
+hist(uniq.object.price[PRICE < 100, PRICE], breaks=100,
+     main = "Histogram of Prices below 100",
+     xlab = "Price")
+```
+
+Nitpicking
+========================================================
+transition: fade
+incremental:true
+```{r, fig.align='center'}
+LastDigit <- function(x) { (x - x%%1) %% 10 }
+```
+```{r, fig.align='center'}
+uniq.object.price[, ONES.PLACE := LastDigit(PRICE)] 
+```
+
+Dollars
+========================================================
+transition:fade
+```{r}
+hist(uniq.object.price[, ONES.PLACE],
+     main = "Histogram of Ones Place",
+     xlab = "Ones Place")
+```
+
+And Cents
+========================================================
+transition: fade
+incremental:true
+```{r, fig.align='center'}
+Cents <- function(x) { round(100 * (x %% 1)) }
+```
+```{r}
+uniq.object.price[, CENTS := Cents(PRICE)]
+```
+
+Penny Wise, Pound Foolish
+========================================================
+transition:fade
+```{r}
+hist(uniq.object.price[, CENTS], breaks=100,
+     main = "Histogram of Cents Portion",
+     xlab = "Cents")
+```
