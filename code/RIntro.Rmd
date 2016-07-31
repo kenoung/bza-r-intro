@@ -1,0 +1,193 @@
+---
+title: "Introductory Data Munging in R"
+author: "Ken Oung Yong Quan"
+date: "23 July 2016"
+output:
+  knitrBootstrap::bootstrap_document:
+    title: "R Intro"
+    theme: journal
+    highlight: sunburst
+    theme.chooser: TRUE
+    highlight.chooser: FALSE
+---
+# Introductory Data Munging in R
+## Opening Words
+TODO: What to expect.
+
+## Importing Data
+We'll be using the DMEF dataset, which is mostly online shopping data (some phone and mail transactions too). Let's just import the data first. (BTW, if you're using RStudio, both of these steps can be performed using the GUI. The code will be generated for you.)
+```{r}
+# Navigating to your working directory (GUI)
+setwd("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/code")
+
+# Loading the file (GUI)
+dmef_dataset <- read.csv("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/data/dmef_dataset.csv")
+```
+
+So the code above loaded the csv data and saved it to the 'dmef_dataset' variable. 
+
+## Getting A Feel
+You can take a look at the entire dataset using the View command, ```View(dmef_dataset)```, get a simple summary using the summary command, ```sumary(dmef_dataset)```, or see the types of data being stored using the str command, ```str(dmef_dataset)```. 
+
+Let's just use the summary command to see the descriptive statistics for this dataset.
+
+```{r}
+summary(dmef_dataset)
+```
+
+## Before we go on...
+Personally, I like using the **data.table** library. You have other options like the standard in-built **data.frame** object, or **dplyr** which works better with ggplot2, but data.table is the one I'm comfortable with.
+
+```{r}
+# If you haven't installed it
+# install.packages(data.table)
+library(data.table)
+
+# Making the dataframe a datatable
+dmef_dataset <- as.data.table(dmef_dataset)
+```
+
+## WTF so many columns
+We really don't need all these details to do our analysis. Let's just take the stuff that we need.
+
+```{r}
+dmef_small <- dmef_dataset[, .(ORDER_NO, ZIP, ORDER_LINE, PRODUCT_CATEGORY_ID, 
+                               CHANNEL, PRODUCT_NO, EXT_PRICE, QUANTITY, 
+                               RETN_QTY, RETN_REVENUE)]
+```
+
+## Weird prices?
+We can start doing some simple histograms to better understand the distribution of the data.
+
+For example, here's the histogram for price.
+
+```{r}
+# First I create a new col for price. EXT_PRICE = PRICE * QTY so to get price..
+dmef_small[, PRICE := EXT_PRICE/QUANTITY]
+
+# You should see a new column called PRICE
+head(dmef_small)
+
+# We want to see the distribution of prices for diff objs
+# But in this case, each observation is a transaction
+# This means there could be super popular objects that mess things up for us
+# So first let's just get prices for unique products
+object.price <- dmef_small[, .(PRODUCT_NO, PRODUCT_CATEGORY_ID, PRICE)]
+setkey(object.price, PRODUCT_NO)
+uniq.object.price <- unique(object.price)
+
+# Now we're left with about 6k unique products to look at
+
+# Plot prices on a histogram
+hist(uniq.object.price[, PRICE],
+     main = "Histogram of all prices",
+     xlab = "Price")
+
+# Can't really see much...let's filter to those cheaper than 100
+hist(uniq.object.price[PRICE < 100, PRICE], breaks=100,
+     main = "Histogram of Prices below 100",
+     xlab = "Price")
+
+# Looks like the prices bunch around certain values
+# How about the ending digits
+# Define a fn to get digit in ones place
+LastDigit <- function(x) { (x - x%%1) %% 10 }
+
+# Add a new col ONES.PLACE
+# And look at that. Most prices end with a 9
+uniq.object.price[, ONES.PLACE := LastDigit(PRICE)] 
+hist(uniq.object.price[, ONES.PLACE],
+     main = "Histogram of Ones Place",
+     xlab = "Ones Place")
+
+# How about the cents portion?
+uniq.object.price[, CENTS := round(100 * (PRICE %% 1))]
+hist(uniq.object.price[, CENTS], breaks=100,
+     main = "Histogram of Cents Portion",
+     xlab = "Cents")
+
+# Wow okay looks like there's not much variation
+# How about the exact numbers?
+table(uniq.object.price[, CENTS])
+```
+
+## Lol is this even helpful?
+I mean, the prices thing sounds interesting and all, but can we derive any cool business insights using R? 
+
+To be honest, that last part was just a warm-up lol. Retail businesses can sometimes have problems with high return rates. Wouldn't it be useful if we could find out more about why products were being returned? Is it an issue with the pricing? Or is it just people in a particular state that are business-hating selfish scum that return anything they buy. Let's find out!
+
+## Return vs Non-return
+First let's split the dataset.
+
+```{r}
+# Split into two groups
+returned <- dmef_small[RETN_QTY > 0]
+not.returned <- dmef_small[RETN_QTY == 0]
+
+# Checks to make sure we're right
+table(dmef_small[, RETN_QTY==0])
+
+# This should match up with our number of rows
+nrow(returned)
+nrow(not.returned)
+
+# Yup looks like it worked, and about 4.75% of all goods were returned?
+nrow(returned)/nrow(dmef_small) * 100
+```
+
+### Price
+Hmm since we've been looking at price so much, was there a difference in the prices of products that were returned vs not returned?
+
+```{r}
+# First let's look at the prices
+# Remember we still have our objects list?
+returned.object.price <- uniq.object.price[PRODUCT_NO %in% returned[, PRODUCT_NO]]
+not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]
+
+# Any difference in price distribution?
+boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE])
+
+# Well clearly there are too many outliers. Let's ignore the outliers.
+boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
+        main = "Product Prices for Returned vs Not Returned Goods",
+        names = c("returned", "not returned"),
+        outline=F)
+```
+
+Well for the prices, it appears that median price is about the same for both, but products that are returned don't go as expensive as those that are returned. You can tell from a lower 75th percentile, and lower max (excluding outliers). Of course, it's also possible that you observe because of a greater variance. There are after all about 2.7x the number of unique products in the not returned list vs the returned list.
+
+### Total Order Size
+Instead of just looking at object price, how about the total spend in that transaction (EXT_PRICE)?
+
+```{r}
+boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
+        main = "Extended Prices for Returned vs Not Returned Goods",
+        names = c("Returned", "Not Returned"))
+```
+Interestingly, after accounting for outliers, it appears that returned goods tend to be in larger orders than non-returned goods. This might indicate that the people who return their goods might be willing to make larger orders in the knowledge that they could return them later on.
+
+### Product Categories
+```{r}
+# Distribution of product categories in return and non-return groups
+barplot(table(returned[, PRODUCT_CATEGORY_ID])/ nrow(returned) *100)
+barplot(table(not.returned[, PRODUCT_CATEGORY_ID])/ nrow(not.returned) *100)
+
+# Percentage of good returned in each product category
+perc.returned.by.cat <- dmef_small[, .(Percentage.Returned=.SD[RETN_QTY>0, .N]/.N*100), by=PRODUCT_CATEGORY_ID]
+barplot(perc.returned.by.cat[, Percentage.Returned], 
+        names=perc.returned.by.cat[, PRODUCT_CATEGORY_ID],
+        main = "Percentage of orders returned by category")
+```
+
+
+---TODO---
+
+## Appendix
+
+### Stats to brush up on
+
+### Helpful shortcuts in RStudio
+
+### Other functions to check out
+
+---TODO---
