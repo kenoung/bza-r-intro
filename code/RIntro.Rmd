@@ -9,6 +9,10 @@ output:
     highlight: sunburst
     theme.chooser: TRUE
     highlight.chooser: FALSE
+    
+```{r setup, include=FALSE}
+opts_chunk$set(cache=TRUE)
+```
 ---
 # Introductory Data Munging in R
 ## First things first: RStudio
@@ -52,7 +56,6 @@ setwd("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/code")
 dmef_dataset <- read.csv("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/data/dmef_dataset.csv")
 # dmef_dataset <- read.csv("~/R Intro/dmef_dataset.csv")
 ```
-
 
 So the code above loads the csv data and saved it to the 'dmef_dataset' variable.
 
@@ -166,6 +169,9 @@ As some of you may have realized, we could have used this to find the unit price
 
 ```{r}
 head(ex1[,.(unit = sum(EXT_PRICE)/sum(QUANTITY)), by = PRODUCT_NO])
+```
+***
+```{r}
 head(unique_ex1)
 ```
 
@@ -264,7 +270,7 @@ table(uniq.object.price[, CENTS])
 ## Lol is this even helpful?
 I mean, the prices thing sounds interesting and all, but can we derive any cool business insights using R? 
 
-Actually, that last part was just a warm-up. Retail businesses can sometimes have problems with high return rates. Wouldn't it be useful if we could find out more about why products were being returned? Is it an issue with the pricing? Or is it just people in a particular state that are business-hating selfish scum that return anything they buy. Let's find out!
+Actually, that last part was just a warm-up. Retail businesses can sometimes have problems with high return rates. Wouldn't it be useful if we could find out more about why products were being returned? Let's try finding out the proportion of returns for each product category, as well as the distribution of returned products.
 
 ## Return vs Non-return
 First let's split the dataset.
@@ -291,11 +297,18 @@ Since we've been looking at price so much, was there a difference in the prices 
 ```{r}
 returned.object.price <- uniq.object.price[PRODUCT_NO %in% returned[, PRODUCT_NO]]
 not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]
+```
 
+Now, we'll introduce you to another type of plot you'll encounter quite often: the box plot. The box plot shows the distribution of the dataset, with the center line representing the mean, the top and bottom of the box representing the 25th and 75th percentile respectively. Additional points outside the box represent outliers. Since a box plot is used to compare distributions, it takes in two data vectors. As usual, to find out more you can type ```?boxplot``` into your console.
+
+```{r}
 # Any difference in price distribution?
 boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE])
+```
 
-# Well clearly there are too many outliers. Let's ignore the outliers.
+Well clearly there are too many outliers. Let's ignore the outliers.
+
+```{r}
 boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
         main = "Product Prices for Returned vs Not Returned Goods",
         names = c("returned", "not returned"),
@@ -305,43 +318,44 @@ boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
 Well for the prices, it appears that median price is about the same for both, but products that are returned don't go as expensive as those that are returned. You can tell from a lower 75th percentile, and lower max (excluding outliers). Of course, it's also possible that you observe because of a greater variance. There are after all about 2.7x the number of unique products in the not returned list vs the returned list.
 
 ### Total Order Size
-Instead of just looking at object price, how about the total spent in that transaction (EXT_PRICE)?
+Instead of just looking at object price, how about the total spent in that transaction, ```(EXT_PRICE)```?
 
 ```{r}
 boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
         main = "Extended Prices for Returned vs Not Returned Goods",
         names = c("Returned", "Not Returned"))
 ```
-Interestingly, after accounting for outliers, it appears that returned goods tend to be in larger orders than non-returned goods. This might indicate that the people who return their goods might be willing to make larger orders in the knowledge that they could return them later on.
+
+Interestingly, after accounting for outliers, it appears that returned goods tend to be in larger orders than non-returned goods. This might indicate that customers who make larger purchases tend to return goods more, or that customers who like to return goods tend to buy more.
 
 ### Product Categories
-Now, let's take a look at which product categories tend to have the highest rate of returns. Firstly, we'll use a bar plot to show the proportion of returned goods that came from that product category. Let's sort the data by getting the count of returned goods per product category. In fact, let's just directly convert the data to percentage of returned goods for each product category.
+Now, let's take a look at which product categories tend to have the highest rate of returns. Firstly, we'll use a bar plot to show the proportion of returned goods that came from that product category. Let's sort the data by getting the count of returned goods per product category. 
 
 ```{r}
-bar1 <- returned[, .N/nrow(returned) * 100, by = PRODUCT_CATEGORY_ID]
+bar1 <- returned[, .N, by = PRODUCT_CATEGORY_ID]
 
-#Now, let's plot the bar chart using the percentage values.
+#Now, let's plot the bar chart using the product counts.
 
-barplot(bar1[,V1], names = bar1[,PRODUCT_CATEGORY_ID])
+barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID])
 ```
 
 Next, we will do the same for non-returned goods.
 
 ```{r}
 #We'll do the same conversion as we did with the returned goods.
-bar2 <- not.returned[, .N/nrow(not.returned) * 100, by = PRODUCT_CATEGORY_ID]
+bar2 <- not.returned[, .N, by = PRODUCT_CATEGORY_ID]
 
 #The same goes for the bar plot.
-barplot(bar2[,V1], names = bar2[,PRODUCT_CATEGORY_ID])
+barplot(bar2[,N], names = bar2[,PRODUCT_CATEGORY_ID])
 ```
 
-When trying to compare data using bar plots, it helps if we can do an overlay to see their distributions with respect to each other, especially when the order of the bards are not sorted. Let's try that.
+When trying to compare data using bar plots, it helps if we can do an overlay to see their distributions with respect to each other, especially when the order of the bars are sorted. Let's try that.
 
-Firstly, you'll realize that product category I has never been returned, and hence does not show up in the original. We'll just fix that by adding in an empty row for I, using the ```rbind``` function.
+Firstly, you'll realize that product category I has never been returned, and hence does not show up in the original. We'll just fix that by adding in an empty row for I, using the ```rbind``` function. Next, we'll sort both tables based on their product category in alphabetical order.
 
 ```{r}
 #We'll start by sorting both the datasets based on the product category
-bar1 <- rbind(bar1, data.table(PRODUCT_CATEGORY_ID = "I", V1 = 0))
+bar1 <- rbind(bar1, data.table(PRODUCT_CATEGORY_ID = "I", N = 0))
 bar1 <- bar1[order(PRODUCT_CATEGORY_ID)]
 bar2 <- bar2[order(PRODUCT_CATEGORY_ID)]
 ```
@@ -351,21 +365,42 @@ The ```order()``` function sorts the rows in a data table based on the specified
 Next we'll plot the bar charts in an overlay. We'll also add in a legend for clarity.
 
 ```{r, results="hold"}
-barplot(bar1[,V1], names = bar1[,PRODUCT_CATEGORY_ID], border = "darkblue", col = "darkblue",  density = 20, ylim = c(0, 30))
+barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID], border = "darkblue", col = "darkblue",  density = 20, 
+        ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
 par(new=TRUE)
-barplot(bar2[,V1], names = bar2[,PRODUCT_CATEGORY_ID], border = "red", col = "red", density = 20, ylim = c(0,30)) 
-legend("topright", legend = c("Returned", "Not Returned"), fill = c("darkblue", "red"))
+barplot(bar2[,N], names = bar2[,PRODUCT_CATEGORY_ID], border = "red", col = "red", density = 20, 
+        ylim = c(0,max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N]))) 
+legend("top", legend = c("Returned", "Not Returned"), fill = c("darkblue", "red"))
+```
+
+Perhaps the numbers are to large to actually get a better picture of proportion. Let's try a stacked bar plot, which also happens to be easier. We'll start by merging the datasets
+
+```{r}
+bar <- bar1[,.(bar1[,N], bar2[,N])]
+
+#Next, we'll convert it to a matrix and invert it, and just insert it into the barplot function
+
+bar <- as.matrix(t(bar))
+barplot(bar, col=c("darkblue","red"), ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
+legend("top", legend = c("Returned", "Not Returned"), fill = c("darkblue", "red"))
 ```
 
 
+This all looks nice and stuff, but let's try to think what this chart means. Each barplot represents the distribution of returned and non-returned goods respectively. For example, we can see that products C, E, P and T were by far the most popular products based on volume of sales. However, take note of the small blue bars representing the number of returned goods for that product category. Although T has a marginally higher sales volume, C has a larger number of returned goods!
+
+Let's break that information further into a more easily understandable format, and find out the percentage of goods returned for each product category.
+
 ```{R}
 # Percentage of good returned in each product category
-perc.returned.by.cat <- dmef_small[, .(Percentage.Returned=.SD[RETN_QTY>0, .N]/.N*100), by=PRODUCT_CATEGORY_ID]
+perc.returned.by.cat <- dmef_small[order(PRODUCT_CATEGORY_ID), .(Percentage.Returned=.SD[RETN_QTY>0, .N]/.N*100), by=PRODUCT_CATEGORY_ID]
+
+#Plotting
 barplot(perc.returned.by.cat[, Percentage.Returned], 
         names=perc.returned.by.cat[, PRODUCT_CATEGORY_ID],
         main = "Percentage of orders returned by category")
 ```
 
+Not surprisingly based on the previous graph, we can see that product category C has the highest percentage of returns. However, another category we may have missed earlier is O, which is almost as high as C! Looking back, this would be because the overall sales volume of O was so low. 
 
 ---TODO---
 

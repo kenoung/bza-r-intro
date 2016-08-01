@@ -5,13 +5,13 @@
 # Prepping the data #
 #####################
 # Set your working environment
-setwd("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/code")
+setwd("~/R Intro/bza-r-intro")
 
 ##############
 # Question 1 #
 ##############
 # Import dataset from iris.csv
-iris <- read.csv("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/data/iris.csv", skip=2)
+iris <- read.csv("~/data/iris.csv", skip=2)
 
 ##############
 # Question 2 #
@@ -120,5 +120,5 @@ SumOfSquares <- function(x, y) {
 # Grading #
 ###########
 # Check answer by running test cases
-source("R-exercises-test.R")
+source("~/R Intro/bza-r-intro/code/R-exercises-test.R")
 
