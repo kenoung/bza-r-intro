@@ -5,7 +5,7 @@ date: "23 July 2016"
 output:
   knitrBootstrap::bootstrap_document:
     title: "R Intro"
-    theme: journal
+    theme: united
     highlight: sunburst
     theme.chooser: TRUE
     highlight.chooser: FALSE
@@ -45,12 +45,12 @@ The read.csv function takes in a csv file and imports it into R. If the file is 
 The '<-' operator is used to store data in a variable. 
 ```{r}
 # Navigating to your working directory (GUI)
-# setwd("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/code")
-setwd("~/R Intro/bza-r-intro/code")
+setwd("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/code")
+# setwd("~/R Intro/bza-r-intro/code")
 
 # Loading the file (GUI)
-#dmef_dataset <- read.csv("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R #Intro/bza-r-intro/data/dmef_dataset.csv")
-dmef_dataset <- read.csv("~/R Intro/dmef_dataset.csv")
+dmef_dataset <- read.csv("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/data/dmef_dataset.csv")
+# dmef_dataset <- read.csv("~/R Intro/dmef_dataset.csv")
 ```
 
 
