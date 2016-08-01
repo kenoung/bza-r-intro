@@ -5,18 +5,76 @@ date: "1 August 2016"
 output: html_document
 ---
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+We'll be using the mtcars dataset for this example.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+It's available in R's built-in base package. Retrieve it using the `data(mtcars)`.
 
 ```{r}
-summary(cars)
+# Importing the data
+data(mtcars)
+
+library(data.table)
+mtcars <- as.data.table(mtcars)
+
+# Find out more about this dataset
+?mtcars
 ```
 
-You can also embed plots, for example:
+Using a multiple linear regression model, we want to investigate the fuel efficiency of cars by looking at their mpg (miles per gallon) rating.
 
-```{r, echo=FALSE}
-plot(cars)
+```{r}
+# Fit the model
+fit <- lm(mpg ~ ., data = mtcars)
+summary(fit)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+By including all the variables, we get a decent model with an adjusted R-squared of 0.8066. However, we note that the p-values are all rather high. This indicates that the model can be improved by removing some of these regressors. 
+
+```{r}
+# Removing the regressor with the highest p-value
+fit_no_cyl <- lm(mpg ~ . - cyl, data = mtcars)
+summary(fit_no_cyl)
+```
+
+Note the improvement in adjusted R-squared. We repeat this until all our regressors have p-values below 0.05.
+
+```{r}
+fit_improved <- lm(mpg ~ wt + qsec + am)
+summary(fit_improved)
+```
+
+This process can actually be automated using the stepAIC function in the MASS package.
+
+```{r}
+library(MASS)
+stepAIC(fit)
+```
+
+However, there are actually better models that you can obtain by applying some simple transformations. For example, note that the relationship between mpg and hp isn't exactly linear. We can obtain a more linear relationship by applying a log transform to the hp column.
+
+```{r}
+# Before transform
+plot(mtcars[, mpg], mtcars[, hp])
+
+# After transform 
+plot(mtcars[, mpg], log(mtcars[, hp]))
+```
+
+Try this new adjusted hp in this regression model.
+
+```{r}
+fit_transformed <- lm(mpg ~ . - hp + log(hp), data=mtcars)
+stepAIC(fit_transformed)
+
+fit_final <- lm(mpg ~ wt + am + log(hp), data=mtcars)
+summary(fit_final)
+```
+
+```{r}
+# Regression Assumptions
+plot(fit_final)
+
+# Check for multi-collinearity
+# Anything below 10 is okay
+vif(fit_final)
+```
