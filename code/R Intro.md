@@ -440,6 +440,7 @@ head(dmef_dataset[EXT_PRICE<70 & PRODUCT_NO %in% c(987669, 989457)])
 Columns.
 ========================================================
 incremental:true
+class:small-code
 
 ```r
 ex1 <- dmef_dataset[,.(PRODUCT_NO, QUANTITY, EXT_PRICE)]
@@ -584,9 +585,18 @@ Phase II
 ========================================================
 
 ```r
-dmef_small <- dmef_dataset[, .(ORDER_NO, ZIP, ORDER_LINE, PRODUCT_CATEGORY_ID, 
-                               CHANNEL, PRODUCT_NO, EXT_PRICE, QUANTITY, 
-                               RETN_QTY, RETN_REVENUE)]
+dmef_small <- dmef_dataset[, .(
+                        ORDER_NO,
+                        ZIP, 
+                        ORDER_LINE,
+                        PRODUCT_CATEGORY_ID, 
+                        CHANNEL, 
+                        PRODUCT_NO, 
+                        EXT_PRICE, 
+                        QUANTITY, 
+                        RETN_QTY,
+                        RETN_REVENUE
+                        )]
 ```
 
 Simple Histograms
@@ -700,22 +710,22 @@ hist(uniq.object.price[, CENTS], breaks=100,
 What Have I Done
 ========================================================
 transition:fade
-incremental: true
+incremental:true
+class:small-code
 
 ```r
-table(uniq.object.price[, CENTS])
+uniq.object.price[, .N, by=CENTS][N>10]
 ```
 
 ```
-
-   0    2    6    7   10   15   16   17   22   25   27   32   33   36   37 
-  95    1    3    6    1    1    2    6    2    1    4    1    1    1    8 
-  38   41   42   45   46   47   49   50   56   57   59   65   66   67   70 
-   1    2    3    9    2    7    2    4    2    4    1    1    1    1    2 
-  71   72   75   76   77   80   85   87   90   91   92   94   95   96   97 
-   2    4    1    2   12    2    4    9   11    1    1    2 8614   31   14 
-  98   99 
-  10   14 
+   CENTS    N
+1:    95 8614
+2:     0   95
+3:    99   14
+4:    97   14
+5:    90   11
+6:    96   31
+7:    77   12
 ```
 
 Something More Productive
@@ -985,11 +995,11 @@ legend("top",
 ```
 
 Whew
-=======================================================
+========================================================
 <img src="R Intro-figure/unnamed-chunk-58-1.png" title="plot of chunk unnamed-chunk-58" alt="plot of chunk unnamed-chunk-58" style="display: block; margin: auto;" />
 
 Yes, There's an Easier Way
-=======================================================
+========================================================
 incremental:true
 
 ```r
@@ -1001,7 +1011,7 @@ bar <- as.matrix(t(bar))
 ```
 
 The Final Barplot
-=======================================================
+========================================================
 class:small-code
 
 ```r
@@ -1016,7 +1026,7 @@ legend("top",
 <img src="R Intro-figure/unnamed-chunk-61-1.png" title="plot of chunk unnamed-chunk-61" alt="plot of chunk unnamed-chunk-61" style="display: block; margin: auto;" />
 
 Just Kidding
-======================================================
+========================================================
 
 ```r
 perc.returned.by.cat <- dmef_small[order(PRODUCT_CATEGORY_ID), 
@@ -1031,6 +1041,6 @@ barplot(perc.returned.by.cat[, Percentage.Returned],
 ```
 
 Room for Improvement
-======================================================
+========================================================
 <img src="R Intro-figure/unnamed-chunk-64-1.png" title="plot of chunk unnamed-chunk-64" alt="plot of chunk unnamed-chunk-64" style="display: block; margin: auto;" />
 

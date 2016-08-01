@@ -13,9 +13,7 @@
 }
 </style>
 
-```{r setup, include=FALSE}
-opts_chunk$set(cache=TRUE)
-```
+
 
 Welcome to BT1101.1
 ========================================================
@@ -167,6 +165,7 @@ head(dmef_dataset[EXT_PRICE<70 & PRODUCT_NO %in% c(987669, 989457)])
 Columns.
 ========================================================
 incremental:true
+class:small-code
 ```{r}
 ex1 <- dmef_dataset[,.(PRODUCT_NO, QUANTITY, EXT_PRICE)]
 ```
@@ -223,9 +222,18 @@ ex1[PRODUCT_NO == 987668, .N, by = EXT_PRICE/QUANTITY]
 Phase II
 ========================================================
 ```{r}
-dmef_small <- dmef_dataset[, .(ORDER_NO, ZIP, ORDER_LINE, PRODUCT_CATEGORY_ID, 
-                               CHANNEL, PRODUCT_NO, EXT_PRICE, QUANTITY, 
-                               RETN_QTY, RETN_REVENUE)]
+dmef_small <- dmef_dataset[, .(
+                        ORDER_NO,
+                        ZIP, 
+                        ORDER_LINE,
+                        PRODUCT_CATEGORY_ID, 
+                        CHANNEL, 
+                        PRODUCT_NO, 
+                        EXT_PRICE, 
+                        QUANTITY, 
+                        RETN_QTY,
+                        RETN_REVENUE
+                        )]
 ```
 
 Simple Histograms
@@ -302,9 +310,10 @@ hist(uniq.object.price[, CENTS], breaks=100,
 What Have I Done
 ========================================================
 transition:fade
-incremental: true
+incremental:true
+class:small-code
 ```{r}
-table(uniq.object.price[, CENTS])
+uniq.object.price[, .N, by=CENTS][N>10]
 ```
 
 Something More Productive
@@ -457,7 +466,7 @@ legend("top",
 ```
 
 Whew
-=======================================================
+========================================================
 ```{r, results = "hold", echo=FALSE, fig.align='center'}
 barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID], border = "darkblue", col = "darkblue",  density = 0, 
         ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
@@ -469,7 +478,7 @@ legend("top", legend = c("Returned", "Not Returned"), fill = c("darkblue", "red"
 ```
 
 Yes, There's an Easier Way
-=======================================================
+========================================================
 incremental:true
 ```{r}
 bar <- bar1[,.(bar1[,N], bar2[,N])]
@@ -479,7 +488,7 @@ bar <- as.matrix(t(bar))
 ```
 
 The Final Barplot
-=======================================================
+========================================================
 class:small-code
 ```{r, fig.align='center'}
 barplot(bar, 
@@ -491,7 +500,7 @@ legend("top",
 ```
 
 Just Kidding
-======================================================
+========================================================
 ```{R}
 perc.returned.by.cat <- dmef_small[order(PRODUCT_CATEGORY_ID), 
                                    .(Percentage.Returned=.SD[RETN_QTY>0, .N]/.N*100),
@@ -504,7 +513,7 @@ barplot(perc.returned.by.cat[, Percentage.Returned],
 ```
 
 Room for Improvement
-======================================================
+========================================================
 ```{r, fig.align='center', echo=FALSE}
 barplot(perc.returned.by.cat[, Percentage.Returned], 
         names=perc.returned.by.cat[, PRODUCT_CATEGORY_ID],
