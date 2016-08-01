@@ -61,6 +61,7 @@ incremental: true
 - Statistical Analysis
 - Logistic Regression
 - Excel
+- Unsupervised Learning
 
 Getting Started
 ========================================================
@@ -167,32 +168,29 @@ Columns.
 ========================================================
 incremental:true
 ```{r}
-dmef_dataset[,.(PRODUCT_NO, QUANTITY, EXT_PRICE)]
-
 ex1 <- dmef_dataset[,.(PRODUCT_NO, QUANTITY, EXT_PRICE)]
+```
+```{r}
+ex1
 ```
 
 Look Ma, I'm Unique!
 ========================================================
 incremental:true
-```{r}
-unique(ex1, by = "PRODUCT_NO")
-
+```{r, results = "hold"}
 unique_ex1 <- unique(ex1, by = "PRODUCT_NO")
+```
+```{r}
+unique_ex1
 ```
 
 Writing Columns
 ========================================================
 incremental:true
-```{r}
+```{r, results="hold"}
 unique_ex1 <- unique_ex1[, unit_price := EXT_PRICE/QUANTITY]
-
 ```
-
-I Hope It Worked
-========================================================
-incremental:true
-```{r}
+```{r, eval=TRUE}
 head(unique_ex1[QUANTITY > 1])
 ```
 
@@ -265,17 +263,17 @@ Nitpicking
 ========================================================
 transition: fade
 incremental:true
-```{r, fig.align='center'}
+```{r}
 LastDigit <- function(x) { (x - x%%1) %% 10 }
 ```
-```{r, fig.align='center'}
+```{r}
 uniq.object.price[, ONES.PLACE := LastDigit(PRICE)] 
 ```
 
 Dollars
 ========================================================
 transition:fade
-```{r}
+```{r, fig.align='center'}
 hist(uniq.object.price[, ONES.PLACE],
      main = "Histogram of Ones Place",
      xlab = "Ones Place")
@@ -285,7 +283,7 @@ And Cents
 ========================================================
 transition: fade
 incremental:true
-```{r, fig.align='center'}
+```{r}
 Cents <- function(x) { round(100 * (x %% 1)) }
 ```
 ```{r}
@@ -295,8 +293,221 @@ uniq.object.price[, CENTS := Cents(PRICE)]
 Penny Wise, Pound Foolish
 ========================================================
 transition:fade
-```{r}
+```{r, fig.align='center'}
 hist(uniq.object.price[, CENTS], breaks=100,
      main = "Histogram of Cents Portion",
      xlab = "Cents")
 ```
+
+What Have I Done
+========================================================
+transition:fade
+incremental: true
+```{r}
+table(uniq.object.price[, CENTS])
+```
+
+Something More Productive
+========================================================
+transition:fade
+incremental: true
+class: small-code
+```{r}
+returned <- dmef_small[RETN_QTY > 0]
+
+not.returned <- dmef_small[RETN_QTY == 0]
+```
+```{r}
+table(dmef_small[, RETN_QTY==0])
+```
+```{r, results = "hold"}
+nrow(returned)
+nrow(not.returned)
+```
+```{r}
+nrow(returned)/nrow(dmef_small) * 100
+```
+
+Price Tag
+========================================================
+transition:fade
+incremental: true
+class: small-code
+```{r, results = "hold"}
+returned.object.price <- uniq.object.price[PRODUCT_NO %in% returned[, PRODUCT_NO]]
+
+not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]
+```
+```{r, results="hold", eval=FALSE}
+returned.object.price
+not.returned.object.price
+```
+
+Price Tag
+========================================================
+class: small-code
+transition: fade
+```{r, results="hold", echo=FALSE}
+returned.object.price
+not.returned.object.price
+```
+
+Boxing Day
+========================================================
+```{r, fig.align='center'}
+boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE])
+```
+
+Malcolm Gladwell
+========================================================
+```{r, fig.align='center'}
+boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
+        main = "Product Prices for Returned vs Not Returned Goods",
+        names = c("returned", "not returned"),
+        outline=F)
+```
+
+Side by Side
+========================================================
+class:small-code
+incremental:true
+```{r}
+boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
+        names = c("returned", "not returned"))
+```
+***
+```{r}
+boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
+        names = c("returned", "not returned"),
+        outline=F)
+```
+
+Big Spenders
+========================================================
+```{r}
+boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
+        main = "Extended Prices for Returned vs Not Returned Goods",
+        names = c("Returned", "Not Returned"))
+```
+
+A Barplot is NOT a Histogram
+========================================================
+incremental:true
+```{r, fig.align='center'}
+bar1 <- returned[, .N, by = PRODUCT_CATEGORY_ID]
+
+barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID])
+```
+
+And a Histogram is NOT a Barplot
+========================================================
+incremental:true
+```{r, fig.align='center'}
+bar2 <- not.returned[, .N, by = PRODUCT_CATEGORY_ID]
+
+barplot(bar2[,N], names = bar2[,PRODUCT_CATEGORY_ID])
+```
+
+Combining Bar Plots
+========================================================
+incremental:true
+class:small-code
+```{r}
+bar1 <- rbind(bar1, data.table(PRODUCT_CATEGORY_ID = "I", N = 0))
+```
+```{r}
+bar1
+```
+***
+```{r}
+bar1 <- bar1[order(PRODUCT_CATEGORY_ID)]
+bar2 <- bar2[order(PRODUCT_CATEGORY_ID)]
+```
+```{r}
+bar1
+```
+
+Overlayering
+========================================================
+class:small-code
+incremental:true
+```{r, eval=FALSE}
+barplot(bar1[,N], 
+        names = bar1[,PRODUCT_CATEGORY_ID], 
+        border = "darkblue", 
+        col = "darkblue",  
+        density = 0, 
+        ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
+```
+```{r, eval=FALSE}
+par(new=TRUE)
+```
+```{r, eval=FALSE}
+barplot(bar2[,N], 
+        names = bar2[,PRODUCT_CATEGORY_ID], 
+        border = "red",
+        col = "red", 
+        density = 0, 
+        ylim = c(0,max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N]))) 
+```
+```{r, eval=FALSE}
+legend("top", 
+       legend = c("Returned", "Not Returned"), 
+       fill = c("darkblue", "red"))
+```
+
+Whew
+=======================================================
+```{r, results = "hold", echo=FALSE, fig.align='center'}
+barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID], border = "darkblue", col = "darkblue",  density = 0, 
+        ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
+par(new=TRUE)
+barplot(bar2[,N], names = bar2[,PRODUCT_CATEGORY_ID], border = "red", col = "red", density = 0, 
+        ylim = c(0,max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N]))) 
+legend("top", legend = c("Returned", "Not Returned"), fill = c("darkblue", "red"))
+
+```
+
+Yes, There's an Easier Way
+=======================================================
+incremental:true
+```{r}
+bar <- bar1[,.(bar1[,N], bar2[,N])]
+```
+```{r}
+bar <- as.matrix(t(bar))
+```
+
+The Final Barplot
+=======================================================
+class:small-code
+```{r, fig.align='center'}
+barplot(bar, 
+        col=c("darkblue","red"), 
+        ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
+legend("top", 
+       legend = c("Returned", "Not Returned"), 
+       fill = c("darkblue", "red"))
+```
+
+Just Kidding
+======================================================
+```{R}
+perc.returned.by.cat <- dmef_small[order(PRODUCT_CATEGORY_ID), 
+                                   .(Percentage.Returned=.SD[RETN_QTY>0, .N]/.N*100),
+                                   by=PRODUCT_CATEGORY_ID]
+```
+```{r, eval=FALSE}
+barplot(perc.returned.by.cat[, Percentage.Returned], 
+        names=perc.returned.by.cat[, PRODUCT_CATEGORY_ID],
+        main = "Percentage of orders returned by category")
+```
+
+Room for Improvement
+======================================================
+```{r, fig.align='center', echo=FALSE}
+barplot(perc.returned.by.cat[, Percentage.Returned], 
+        names=perc.returned.by.cat[, PRODUCT_CATEGORY_ID],
+        main = "Percentage of orders returned by category")
+```
+

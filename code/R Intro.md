@@ -59,6 +59,7 @@ incremental: true
 - Statistical Analysis
 - Logistic Regression
 - Excel
+- Unsupervised Learning
 
 Getting Started
 ========================================================
@@ -441,7 +442,11 @@ Columns.
 incremental:true
 
 ```r
-dmef_dataset[,.(PRODUCT_NO, QUANTITY, EXT_PRICE)]
+ex1 <- dmef_dataset[,.(PRODUCT_NO, QUANTITY, EXT_PRICE)]
+```
+
+```r
+ex1
 ```
 
 ```
@@ -459,16 +464,16 @@ dmef_dataset[,.(PRODUCT_NO, QUANTITY, EXT_PRICE)]
 226129:     989686        1    179.95
 ```
 
-```r
-ex1 <- dmef_dataset[,.(PRODUCT_NO, QUANTITY, EXT_PRICE)]
-```
-
 Look Ma, I'm Unique!
 ========================================================
 incremental:true
 
 ```r
-unique(ex1, by = "PRODUCT_NO")
+unique_ex1 <- unique(ex1, by = "PRODUCT_NO")
+```
+
+```r
+unique_ex1
 ```
 
 ```
@@ -486,10 +491,6 @@ unique(ex1, by = "PRODUCT_NO")
 6366:     991822        1     99.95
 ```
 
-```r
-unique_ex1 <- unique(ex1, by = "PRODUCT_NO")
-```
-
 Writing Columns
 ========================================================
 incremental:true
@@ -497,10 +498,6 @@ incremental:true
 ```r
 unique_ex1 <- unique_ex1[, unit_price := EXT_PRICE/QUANTITY]
 ```
-
-I Hope It Worked
-========================================================
-incremental:true
 
 ```r
 head(unique_ex1[QUANTITY > 1])
@@ -636,7 +633,7 @@ transition: fade
 hist(uniq.object.price[, PRICE],main = "Histogram of all prices",xlab = "Price")
 ```
 
-<img src="R Intro-figure/unnamed-chunk-25-1.png" title="plot of chunk unnamed-chunk-25" alt="plot of chunk unnamed-chunk-25" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-27-1.png" title="plot of chunk unnamed-chunk-27" alt="plot of chunk unnamed-chunk-27" style="display: block; margin: auto;" />
 
 Break It Down
 ========================================================
@@ -648,7 +645,7 @@ hist(uniq.object.price[PRICE < 100, PRICE], breaks=100,
      xlab = "Price")
 ```
 
-<img src="R Intro-figure/unnamed-chunk-26-1.png" title="plot of chunk unnamed-chunk-26" alt="plot of chunk unnamed-chunk-26" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-28-1.png" title="plot of chunk unnamed-chunk-28" alt="plot of chunk unnamed-chunk-28" style="display: block; margin: auto;" />
 
 Nitpicking
 ========================================================
@@ -673,7 +670,7 @@ hist(uniq.object.price[, ONES.PLACE],
      xlab = "Ones Place")
 ```
 
-![plot of chunk unnamed-chunk-29](R Intro-figure/unnamed-chunk-29-1.png)
+<img src="R Intro-figure/unnamed-chunk-31-1.png" title="plot of chunk unnamed-chunk-31" alt="plot of chunk unnamed-chunk-31" style="display: block; margin: auto;" />
 
 And Cents
 ========================================================
@@ -698,4 +695,342 @@ hist(uniq.object.price[, CENTS], breaks=100,
      xlab = "Cents")
 ```
 
-![plot of chunk unnamed-chunk-32](R Intro-figure/unnamed-chunk-32-1.png)
+<img src="R Intro-figure/unnamed-chunk-34-1.png" title="plot of chunk unnamed-chunk-34" alt="plot of chunk unnamed-chunk-34" style="display: block; margin: auto;" />
+
+What Have I Done
+========================================================
+transition:fade
+incremental: true
+
+```r
+table(uniq.object.price[, CENTS])
+```
+
+```
+
+   0    2    6    7   10   15   16   17   22   25   27   32   33   36   37 
+  95    1    3    6    1    1    2    6    2    1    4    1    1    1    8 
+  38   41   42   45   46   47   49   50   56   57   59   65   66   67   70 
+   1    2    3    9    2    7    2    4    2    4    1    1    1    1    2 
+  71   72   75   76   77   80   85   87   90   91   92   94   95   96   97 
+   2    4    1    2   12    2    4    9   11    1    1    2 8614   31   14 
+  98   99 
+  10   14 
+```
+
+Something More Productive
+========================================================
+transition:fade
+incremental: true
+class: small-code
+
+```r
+returned <- dmef_small[RETN_QTY > 0]
+
+not.returned <- dmef_small[RETN_QTY == 0]
+```
+
+```r
+table(dmef_small[, RETN_QTY==0])
+```
+
+```
+
+ FALSE   TRUE 
+ 10742 215387 
+```
+
+```r
+nrow(returned)
+nrow(not.returned)
+```
+
+```
+[1] 10742
+[1] 215387
+```
+
+```r
+nrow(returned)/nrow(dmef_small) * 100
+```
+
+```
+[1] 4.750386
+```
+
+Price Tag
+========================================================
+transition:fade
+incremental: true
+class: small-code
+
+```r
+returned.object.price <- uniq.object.price[PRODUCT_NO %in% returned[, PRODUCT_NO]]
+
+not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]
+```
+
+```r
+returned.object.price
+not.returned.object.price
+```
+
+Price Tag
+========================================================
+class: small-code
+transition: fade
+
+```
+      PRODUCT_NO PRODUCT_CATEGORY_ID  PRICE ONES.PLACE CENTS
+   1:     987668                   C  79.95          9    95
+   2:     989457                   C  69.95          9    95
+   3:     986782                   E 349.95          9    95
+   4:     986620                   E 249.95          9    95
+   5:     985438                   P 199.95          9    95
+  ---                                                       
+3682:     989512                   C  79.95          9    95
+3683:     985060                   C  69.95          9    95
+3684:     986816                   H 389.95          9    95
+3685:     989161                   P  77.95          7    95
+3686:     989685                   A 119.95          9    95
+      PRODUCT_NO PRODUCT_CATEGORY_ID  PRICE ONES.PLACE CENTS
+   1:     987668                   C  79.95          9    95
+   2:     989457                   C  69.95          9    95
+   3:     986782                   E 349.95          9    95
+   4:     986620                   E 249.95          9    95
+   5:     989973                   E  49.95          9    95
+  ---                                                       
+8840:     991774                   O 219.95          9    95
+8841:     991867                   F  49.95          9    95
+8842:     991868                   F  29.95          9    95
+8843:     991437                   T  99.95          9    95
+8844:     989685                   A 119.95          9    95
+```
+
+Boxing Day
+========================================================
+
+```r
+boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE])
+```
+
+<img src="R Intro-figure/unnamed-chunk-43-1.png" title="plot of chunk unnamed-chunk-43" alt="plot of chunk unnamed-chunk-43" style="display: block; margin: auto;" />
+
+Malcolm Gladwell
+========================================================
+
+```r
+boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
+        main = "Product Prices for Returned vs Not Returned Goods",
+        names = c("returned", "not returned"),
+        outline=F)
+```
+
+<img src="R Intro-figure/unnamed-chunk-44-1.png" title="plot of chunk unnamed-chunk-44" alt="plot of chunk unnamed-chunk-44" style="display: block; margin: auto;" />
+
+Side by Side
+========================================================
+class:small-code
+incremental:true
+
+```r
+boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
+        names = c("returned", "not returned"))
+```
+
+![plot of chunk unnamed-chunk-45](R Intro-figure/unnamed-chunk-45-1.png)
+***
+
+```r
+boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
+        names = c("returned", "not returned"),
+        outline=F)
+```
+
+![plot of chunk unnamed-chunk-46](R Intro-figure/unnamed-chunk-46-1.png)
+
+Big Spenders
+========================================================
+
+```r
+boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
+        main = "Extended Prices for Returned vs Not Returned Goods",
+        names = c("Returned", "Not Returned"))
+```
+
+![plot of chunk unnamed-chunk-47](R Intro-figure/unnamed-chunk-47-1.png)
+
+A Barplot is NOT a Histogram
+========================================================
+incremental:true
+
+```r
+bar1 <- returned[, .N, by = PRODUCT_CATEGORY_ID]
+
+barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID])
+```
+
+<img src="R Intro-figure/unnamed-chunk-48-1.png" title="plot of chunk unnamed-chunk-48" alt="plot of chunk unnamed-chunk-48" style="display: block; margin: auto;" />
+
+And a Histogram is NOT a Barplot
+========================================================
+incremental:true
+
+```r
+bar2 <- not.returned[, .N, by = PRODUCT_CATEGORY_ID]
+
+barplot(bar2[,N], names = bar2[,PRODUCT_CATEGORY_ID])
+```
+
+<img src="R Intro-figure/unnamed-chunk-49-1.png" title="plot of chunk unnamed-chunk-49" alt="plot of chunk unnamed-chunk-49" style="display: block; margin: auto;" />
+
+Combining Bar Plots
+========================================================
+incremental:true
+class:small-code
+
+```r
+bar1 <- rbind(bar1, data.table(PRODUCT_CATEGORY_ID = "I", N = 0))
+```
+
+```r
+bar1
+```
+
+```
+    PRODUCT_CATEGORY_ID    N
+ 1:                   E 1618
+ 2:                   C 2528
+ 3:                   H  920
+ 4:                   P 1465
+ 5:                   F  743
+ 6:                   K  365
+ 7:                   G   13
+ 8:                   B  675
+ 9:                   X  409
+10:                   A  365
+11:                   T  895
+12:                   L  350
+13:                   O  162
+14:                   S   66
+15:                   D   12
+16:                   J  114
+17:                   M   42
+18:                   I    0
+```
+***
+
+```r
+bar1 <- bar1[order(PRODUCT_CATEGORY_ID)]
+bar2 <- bar2[order(PRODUCT_CATEGORY_ID)]
+```
+
+```r
+bar1
+```
+
+```
+    PRODUCT_CATEGORY_ID    N
+ 1:                   A  365
+ 2:                   B  675
+ 3:                   C 2528
+ 4:                   D   12
+ 5:                   E 1618
+ 6:                   F  743
+ 7:                   G   13
+ 8:                   H  920
+ 9:                   I    0
+10:                   J  114
+11:                   K  365
+12:                   L  350
+13:                   M   42
+14:                   O  162
+15:                   P 1465
+16:                   S   66
+17:                   T  895
+18:                   X  409
+```
+
+Overlayering
+========================================================
+class:small-code
+incremental:true
+
+```r
+barplot(bar1[,N], 
+        names = bar1[,PRODUCT_CATEGORY_ID], 
+        border = "darkblue", 
+        col = "darkblue",  
+        density = 0, 
+        ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
+```
+
+```r
+par(new=TRUE)
+```
+
+```r
+barplot(bar2[,N], 
+        names = bar2[,PRODUCT_CATEGORY_ID], 
+        border = "red",
+        col = "red", 
+        density = 0, 
+        ylim = c(0,max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N]))) 
+```
+
+```r
+legend("top", 
+       legend = c("Returned", "Not Returned"), 
+       fill = c("darkblue", "red"))
+```
+
+Whew
+=======================================================
+<img src="R Intro-figure/unnamed-chunk-58-1.png" title="plot of chunk unnamed-chunk-58" alt="plot of chunk unnamed-chunk-58" style="display: block; margin: auto;" />
+
+Yes, There's an Easier Way
+=======================================================
+incremental:true
+
+```r
+bar <- bar1[,.(bar1[,N], bar2[,N])]
+```
+
+```r
+bar <- as.matrix(t(bar))
+```
+
+The Final Barplot
+=======================================================
+class:small-code
+
+```r
+barplot(bar, 
+        col=c("darkblue","red"), 
+        ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
+legend("top", 
+       legend = c("Returned", "Not Returned"), 
+       fill = c("darkblue", "red"))
+```
+
+<img src="R Intro-figure/unnamed-chunk-61-1.png" title="plot of chunk unnamed-chunk-61" alt="plot of chunk unnamed-chunk-61" style="display: block; margin: auto;" />
+
+Just Kidding
+======================================================
+
+```r
+perc.returned.by.cat <- dmef_small[order(PRODUCT_CATEGORY_ID), 
+                                   .(Percentage.Returned=.SD[RETN_QTY>0, .N]/.N*100),
+                                   by=PRODUCT_CATEGORY_ID]
+```
+
+```r
+barplot(perc.returned.by.cat[, Percentage.Returned], 
+        names=perc.returned.by.cat[, PRODUCT_CATEGORY_ID],
+        main = "Percentage of orders returned by category")
+```
+
+Room for Improvement
+======================================================
+<img src="R Intro-figure/unnamed-chunk-64-1.png" title="plot of chunk unnamed-chunk-64" alt="plot of chunk unnamed-chunk-64" style="display: block; margin: auto;" />
+
