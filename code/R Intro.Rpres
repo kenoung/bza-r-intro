@@ -7,12 +7,19 @@
 .small-code pre code {
   font-size: 1em;
 }
-
+.smaller-code pre code {
+  font-size: 0.9em;
+}
+.smallest-code pre code {
+  font-size: 0.6em;
+}
+.smallestest-code pre code {
+  font-size: 0.55em;
+}
 .big {
   font-size: 10em;
 }
 </style>
-
 
 
 Welcome to BT1101.1
@@ -101,7 +108,7 @@ class(dmef_dataset)
 Sneak Peeks
 ========================================================
 incremental: true
-class: small-code
+class: smallestest-code
 ```{r}
 dmef_dataset
 ```
@@ -116,7 +123,7 @@ View(dmef_dataset)
 Maybe Not All At Once
 ========================================================
 incremental: true
-class:small-code
+class:smallestest-code
 ```{r}
 summary(dmef_dataset)
 ```
@@ -124,7 +131,7 @@ summary(dmef_dataset)
 Rows, Rows, Rows
 ========================================================
 incremental: true
-class: small-code
+class: smaller-code
 ```data.table[rows, columns, by]```
 ```{r}
 dmef_dataset[3:5]
@@ -133,7 +140,7 @@ dmef_dataset[3:5]
 Finding The One
 ========================================================
 incremental: true
-class: small-code
+class: smaller-code
 ```{r}
 head(dmef_dataset[PRODUCT_NO %in% 987668])
 ```
@@ -141,7 +148,7 @@ head(dmef_dataset[PRODUCT_NO %in% 987668])
 But Two's Company
 ========================================================
 incremental:true
-class: small-code
+class: smaller-code
 ```{r}
 head(dmef_dataset[PRODUCT_NO %in% c(987668, 989457)])
 ```
@@ -149,7 +156,7 @@ head(dmef_dataset[PRODUCT_NO %in% c(987668, 989457)])
 Discrimination
 ========================================================
 incremental:true
-class: small-code
+class: smaller-code
 ```{r}
 head(dmef_dataset[EXT_PRICE < 30])
 ```
@@ -157,7 +164,7 @@ head(dmef_dataset[EXT_PRICE < 30])
 All Together Now
 ========================================================
 incremental:true
-class: small-code
+class: smaller-code
 ```{r}
 head(dmef_dataset[EXT_PRICE<70 & PRODUCT_NO %in% c(987669, 989457)])
 ```
@@ -369,6 +376,7 @@ boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE])
 
 Malcolm Gladwell
 ========================================================
+class:small-code
 ```{r, fig.align='center'}
 boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
         main = "Product Prices for Returned vs Not Returned Goods",
@@ -393,7 +401,8 @@ boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
 
 Big Spenders
 ========================================================
-```{r}
+class:small-code
+```{r, fig.align = 'center'}
 boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
         main = "Extended Prices for Returned vs Not Returned Goods",
         names = c("Returned", "Not Returned"))
@@ -401,7 +410,7 @@ boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
 
 A Barplot is NOT a Histogram
 ========================================================
-incremental:true
+class:small-code
 ```{r, fig.align='center'}
 bar1 <- returned[, .N, by = PRODUCT_CATEGORY_ID]
 
@@ -410,7 +419,7 @@ barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID])
 
 And a Histogram is NOT a Barplot
 ========================================================
-incremental:true
+class:small-code
 ```{r, fig.align='center'}
 bar2 <- not.returned[, .N, by = PRODUCT_CATEGORY_ID]
 
@@ -518,5 +527,87 @@ Room for Improvement
 barplot(perc.returned.by.cat[, Percentage.Returned], 
         names=perc.returned.by.cat[, PRODUCT_CATEGORY_ID],
         main = "Percentage of orders returned by category")
+```
+
+Final Boss
+========================================================
+incremental: true
+```{r}
+data(mtcars)
+```
+```{r}
+mtcars <- as.data.table(mtcars)
+```
+
+Getting Fits
+========================================================
+incremental: true
+class:smaller-code
+```{r, strip.white=TRUE}
+fit <- lm(mpg ~ ., data = mtcars)
+summary(fit)
+```
+
+Streamlining
+========================================================
+incremental: true
+class:smaller-code
+```{r, strip.white=TRUE}
+fit_no_cyl <- lm(mpg ~ . - cyl, data = mtcars)
+summary(fit_no_cyl)
+```
+
+One Eternity Later
+========================================================
+incremental: true
+class:smaller-code
+```{r, strip.white=TRUE}
+fit_improved <- lm(mpg ~ wt + qsec + am, data = mtcars)
+summary(fit_improved)
+```
+
+Of Course There's a Shortcut
+========================================================
+incremental: true
+```{r, strip.white=TRUE, eval=FALSE}
+library(MASS)
+stepAIC(fit)
+```
+
+Oh Right, Scatterplots
+========================================================
+```{r, fig.align='center'}
+plot(mtcars[, mpg], mtcars[, hp])
+```
+
+Trust Me, It's Significant
+========================================================
+```{r, fig.align='center'}
+plot(mtcars[, mpg], log(mtcars[, hp]))
+```
+
+All Regressions Are Equal
+========================================================
+incremental:true
+class:smaller-code
+```{r}
+fit_transformed <- lm(mpg ~ . - hp + log(hp), data=mtcars)
+```
+```{r, eval=FALSE}
+stepAIC(fit_transformed)
+```
+```{r}
+fit_final <- lm(mpg ~ wt + am + log(hp), data=mtcars)
+```
+```{r}
+summary(fit_final)
+```
+
+But Some Are More Equal Than Others
+========================================================
+class:smaller-code
+```{r, fig.align='center', strip.white=TRUE, fig.width = 10, fig.height = 7.5}
+par(mfrow=c(2,2))
+plot(fit_final)
 ```
 

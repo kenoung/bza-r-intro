@@ -10,9 +10,7 @@ output:
     theme.chooser: TRUE
     highlight.chooser: FALSE
     
-```{r setup, include=FALSE}
-opts_chunk$set(cache=TRUE)
-```
+
 ---
 # Introductory Data Munging in R
 ## First things first: RStudio
@@ -49,12 +47,12 @@ The read.csv function takes in a csv file and imports it into R. If the file is 
 The '<-' operator is used to store data in a variable. 
 ```{r}
 # Navigating to your working directory (GUI)
-setwd("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/code")
-# setwd("~/R Intro/bza-r-intro/code")
+# setwd("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/code")
+setwd("~/R Intro/bza-r-intro/code")
 
 # Loading the file (GUI)
-dmef_dataset <- read.csv("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/data/dmef_dataset.csv")
-# dmef_dataset <- read.csv("~/R Intro/dmef_dataset.csv")
+# dmef_dataset <- read.csv("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/data/dmef_dataset.csv")
+dmef_dataset <- read.csv("~/R Intro/dmef_dataset.csv")
 ```
 
 So the code above loads the csv data and saved it to the 'dmef_dataset' variable.
@@ -401,6 +399,81 @@ barplot(perc.returned.by.cat[, Percentage.Returned],
 ```
 
 Not surprisingly based on the previous graph, we can see that product category C has the highest percentage of returns. However, another category we may have missed earlier is O, which is almost as high as C! Looking back, this would be because the overall sales volume of O was so low. 
+
+## Regression
+
+For this part, we'll be using a new dataset called mtcars. It's available in R's built-in base package. Retrieve it using the `data(mtcars)` and convert it to a ```data.table```.
+
+```{r}
+# Importing the data
+data(mtcars)
+
+library(data.table)
+mtcars <- as.data.table(mtcars)
+
+# Find out more about this dataset
+?mtcars
+```
+
+Using a multiple linear regression model, we want to investigate the fuel efficiency of cars by looking at their mpg (miles per gallon) rating. Let's see how each factor affects the mpg using the built in regression function in R.
+
+```{r}
+# Fit the model
+fit <- lm(mpg ~ ., data = mtcars)
+summary(fit)
+```
+
+By including all the variables, we get a decent model with an adjusted R-squared of 0.8066. However, we note that the p-values are all rather high. This indicates that the model can be improved by removing some of these regressors.
+
+```{r}
+# Removing the regressor with the highest p-value
+fit_no_cyl <- lm(mpg ~ . - cyl, data = mtcars)
+summary(fit_no_cyl)
+```
+
+Note the improvement in adjusted R-squared. We repeat this until all our regressors have p-values below 0.05.
+
+```{r}
+fit_improved <- lm(mpg ~ wt + qsec + am, data = mtcars)
+summary(fit_improved)
+```
+
+This process can actually be automated using the stepAIC function in the MASS package.
+
+```{r}
+library(MASS)
+stepAIC(fit)
+```
+
+However, there are actually better models that you can obtain by applying some simple transformations. For example, let's take a look at the relationship between mpg and hp.
+
+```{r}
+plot(mtcars[, mpg], mtcars[, hp])
+```
+
+We can see there isn't a very distinct linear relationship, which can hurt our linear regression model. So let's apply a basic log transformation.
+
+```{r}
+plot(mtcars[, mpg], log(mtcars[, hp]))
+```
+
+And that looks significantly better. Let's try this new adjusted hp in this regression model.
+
+```{r}
+fit_transformed <- lm(mpg ~ . - hp + log(hp), data=mtcars)
+stepAIC(fit_transformed)
+
+fit_final <- lm(mpg ~ wt + am + log(hp), data=mtcars)
+summary(fit_final)
+```
+
+```{r}
+# Regression Assumptions
+plot(fit_final)
+# Check for multi-collinearity
+# Anything below 10 is okay
+# vif(fit_final)
+```
 
 ---TODO---
 
