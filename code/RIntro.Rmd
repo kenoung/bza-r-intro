@@ -9,7 +9,7 @@ output:
     highlight: sunburst
     theme.chooser: TRUE
     highlight.chooser: FALSE
-    
+
 
 ---
 # Introductory Data Munging in R
