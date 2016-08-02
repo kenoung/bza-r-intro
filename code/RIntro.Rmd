@@ -9,10 +9,7 @@ output:
     highlight: sunburst
     theme.chooser: TRUE
     highlight.chooser: FALSE
-    
-```{r setup, include=FALSE}
-opts_chunk$set(cache=TRUE)
-```
+
 ---
 # Introductory Data Munging in R
 ## First things first: RStudio
