@@ -655,6 +655,7 @@ hist(uniq.object.price[, PRICE],main = "Histogram of all prices",xlab = "Price")
 Break It Down
 ========================================================
 transition: fade
+class:small-code
 
 ```r
 hist(uniq.object.price[PRICE < 100, PRICE], breaks=100,
@@ -680,6 +681,7 @@ uniq.object.price[, ONES.PLACE := LastDigit(PRICE)]
 Dollars
 ========================================================
 transition:fade
+class:small-code
 
 ```r
 hist(uniq.object.price[, ONES.PLACE],
@@ -705,6 +707,7 @@ uniq.object.price[, CENTS := Cents(PRICE)]
 Penny Wise, Pound Foolish
 ========================================================
 transition:fade
+class: small-code
 
 ```r
 hist(uniq.object.price[, CENTS], breaks=100,
