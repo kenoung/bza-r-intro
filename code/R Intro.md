@@ -7,12 +7,19 @@
 .small-code pre code {
   font-size: 1em;
 }
-
+.smaller-code pre code {
+  font-size: 0.9em;
+}
+.smallest-code pre code {
+  font-size: 0.6em;
+}
+.smallestest-code pre code {
+  font-size: 0.55em;
+}
 .big {
   font-size: 10em;
 }
 </style>
-
 
 
 Welcome to BT1101.1
@@ -115,7 +122,7 @@ class(dmef_dataset)
 Sneak Peeks
 ========================================================
 incremental: true
-class: small-code
+class: smallestest-code
 
 ```r
 dmef_dataset
@@ -183,7 +190,7 @@ View(dmef_dataset)
 Maybe Not All At Once
 ========================================================
 incremental: true
-class:small-code
+class:smallestest-code
 
 ```r
 summary(dmef_dataset)
@@ -251,7 +258,7 @@ summary(dmef_dataset)
 Rows, Rows, Rows
 ========================================================
 incremental: true
-class: small-code
+class: smaller-code
 ```data.table[rows, columns, by]```
 
 ```r
@@ -280,7 +287,7 @@ dmef_dataset[3:5]
 Finding The One
 ========================================================
 incremental: true
-class: small-code
+class: smaller-code
 
 ```r
 head(dmef_dataset[PRODUCT_NO %in% 987668])
@@ -320,7 +327,7 @@ head(dmef_dataset[PRODUCT_NO %in% 987668])
 But Two's Company
 ========================================================
 incremental:true
-class: small-code
+class: smaller-code
 
 ```r
 head(dmef_dataset[PRODUCT_NO %in% c(987668, 989457)])
@@ -360,7 +367,7 @@ head(dmef_dataset[PRODUCT_NO %in% c(987668, 989457)])
 Discrimination
 ========================================================
 incremental:true
-class: small-code
+class: smaller-code
 
 ```r
 head(dmef_dataset[EXT_PRICE < 30])
@@ -400,7 +407,7 @@ head(dmef_dataset[EXT_PRICE < 30])
 All Together Now
 ========================================================
 incremental:true
-class: small-code
+class: smaller-code
 
 ```r
 head(dmef_dataset[EXT_PRICE<70 & PRODUCT_NO %in% c(987669, 989457)])
@@ -828,6 +835,7 @@ boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE])
 
 Malcolm Gladwell
 ========================================================
+class:small-code
 
 ```r
 boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
@@ -861,6 +869,7 @@ boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
 
 Big Spenders
 ========================================================
+class:small-code
 
 ```r
 boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
@@ -868,11 +877,11 @@ boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
         names = c("Returned", "Not Returned"))
 ```
 
-![plot of chunk unnamed-chunk-47](R Intro-figure/unnamed-chunk-47-1.png)
+<img src="R Intro-figure/unnamed-chunk-47-1.png" title="plot of chunk unnamed-chunk-47" alt="plot of chunk unnamed-chunk-47" style="display: block; margin: auto;" />
 
 A Barplot is NOT a Histogram
 ========================================================
-incremental:true
+class:small-code
 
 ```r
 bar1 <- returned[, .N, by = PRODUCT_CATEGORY_ID]
@@ -884,7 +893,7 @@ barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID])
 
 And a Histogram is NOT a Barplot
 ========================================================
-incremental:true
+class:small-code
 
 ```r
 bar2 <- not.returned[, .N, by = PRODUCT_CATEGORY_ID]
@@ -1043,4 +1052,210 @@ barplot(perc.returned.by.cat[, Percentage.Returned],
 Room for Improvement
 ========================================================
 <img src="R Intro-figure/unnamed-chunk-64-1.png" title="plot of chunk unnamed-chunk-64" alt="plot of chunk unnamed-chunk-64" style="display: block; margin: auto;" />
+
+Final Boss
+========================================================
+incremental: true
+
+```r
+data(mtcars)
+```
+
+```r
+mtcars <- as.data.table(mtcars)
+```
+
+Getting Fits
+========================================================
+incremental: true
+class:smaller-code
+
+```r
+fit <- lm(mpg ~ ., data = mtcars)
+summary(fit)
+```
+
+```
+
+Call:
+lm(formula = mpg ~ ., data = mtcars)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.4506 -1.6044 -0.1196  1.2193  4.6271 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)  
+(Intercept) 12.30337   18.71788   0.657   0.5181  
+cyl         -0.11144    1.04502  -0.107   0.9161  
+disp         0.01334    0.01786   0.747   0.4635  
+hp          -0.02148    0.02177  -0.987   0.3350  
+drat         0.78711    1.63537   0.481   0.6353  
+wt          -3.71530    1.89441  -1.961   0.0633 .
+qsec         0.82104    0.73084   1.123   0.2739  
+vs           0.31776    2.10451   0.151   0.8814  
+am           2.52023    2.05665   1.225   0.2340  
+gear         0.65541    1.49326   0.439   0.6652  
+carb        -0.19942    0.82875  -0.241   0.8122  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.65 on 21 degrees of freedom
+Multiple R-squared:  0.869,	Adjusted R-squared:  0.8066 
+F-statistic: 13.93 on 10 and 21 DF,  p-value: 3.793e-07
+```
+
+Streamlining
+========================================================
+incremental: true
+class:smaller-code
+
+```r
+fit_no_cyl <- lm(mpg ~ . - cyl, data = mtcars)
+summary(fit_no_cyl)
+```
+
+```
+
+Call:
+lm(formula = mpg ~ . - cyl, data = mtcars)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.4286 -1.5908 -0.0412  1.2120  4.5961 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)  
+(Intercept) 10.96007   13.53030   0.810   0.4266  
+disp         0.01283    0.01682   0.763   0.4538  
+hp          -0.02191    0.02091  -1.048   0.3062  
+drat         0.83520    1.53625   0.544   0.5921  
+wt          -3.69251    1.83954  -2.007   0.0572 .
+qsec         0.84244    0.68678   1.227   0.2329  
+vs           0.38975    1.94800   0.200   0.8433  
+am           2.57743    1.94035   1.328   0.1977  
+gear         0.71155    1.36562   0.521   0.6075  
+carb        -0.21958    0.78856  -0.278   0.7833  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.59 on 22 degrees of freedom
+Multiple R-squared:  0.8689,	Adjusted R-squared:  0.8153 
+F-statistic: 16.21 on 9 and 22 DF,  p-value: 9.031e-08
+```
+
+One Eternity Later
+========================================================
+incremental: true
+class:smaller-code
+
+```r
+fit_improved <- lm(mpg ~ wt + qsec + am, data = mtcars)
+summary(fit_improved)
+```
+
+```
+
+Call:
+lm(formula = mpg ~ wt + qsec + am, data = mtcars)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.4811 -1.5555 -0.7257  1.4110  4.6610 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   9.6178     6.9596   1.382 0.177915    
+wt           -3.9165     0.7112  -5.507 6.95e-06 ***
+qsec          1.2259     0.2887   4.247 0.000216 ***
+am            2.9358     1.4109   2.081 0.046716 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.459 on 28 degrees of freedom
+Multiple R-squared:  0.8497,	Adjusted R-squared:  0.8336 
+F-statistic: 52.75 on 3 and 28 DF,  p-value: 1.21e-11
+```
+
+Of Course There's a Shortcut
+========================================================
+incremental: true
+
+```r
+library(MASS)
+stepAIC(fit)
+```
+
+Oh Right, Scatterplots
+========================================================
+
+```r
+plot(mtcars[, mpg], mtcars[, hp])
+```
+
+<img src="R Intro-figure/unnamed-chunk-71-1.png" title="plot of chunk unnamed-chunk-71" alt="plot of chunk unnamed-chunk-71" style="display: block; margin: auto;" />
+
+Trust Me, It's Significant
+========================================================
+
+```r
+plot(mtcars[, mpg], log(mtcars[, hp]))
+```
+
+<img src="R Intro-figure/unnamed-chunk-72-1.png" title="plot of chunk unnamed-chunk-72" alt="plot of chunk unnamed-chunk-72" style="display: block; margin: auto;" />
+
+All Regressions Are Equal
+========================================================
+incremental:true
+class:smaller-code
+
+```r
+fit_transformed <- lm(mpg ~ . - hp + log(hp), data=mtcars)
+```
+
+```r
+stepAIC(fit_transformed)
+```
+
+```r
+fit_final <- lm(mpg ~ wt + am + log(hp), data=mtcars)
+```
+
+```r
+summary(fit_final)
+```
+
+```
+
+Call:
+lm(formula = mpg ~ wt + am + log(hp), data = mtcars)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.8148 -1.5495 -0.4402  1.1327  4.7638 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  58.9957     4.8970  12.047 1.36e-12 ***
+wt           -2.4681     0.8215  -3.005  0.00555 ** 
+am            1.7565     1.1987   1.465  0.15397    
+log(hp)      -6.4888     1.3004  -4.990 2.85e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.294 on 28 degrees of freedom
+Multiple R-squared:  0.8692,	Adjusted R-squared:  0.8552 
+F-statistic: 62.01 on 3 and 28 DF,  p-value: 1.747e-12
+```
+
+But Some Are More Equal Than Others
+========================================================
+class:smaller-code
+
+```r
+par(mfrow=c(2,2))
+plot(fit_final)
+```
+
+<img src="R Intro-figure/unnamed-chunk-77-1.png" title="plot of chunk unnamed-chunk-77" alt="plot of chunk unnamed-chunk-77" style="display: block; margin: auto;" />
 
