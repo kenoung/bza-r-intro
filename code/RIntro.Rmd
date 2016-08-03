@@ -25,9 +25,10 @@ Next, you'll need RStudio, which is a GUI for using R:
 
 R is a language used mainly for statistical analysis. It is easily extendible through packages that can be downloaded and installed from the R-repository. To access this repository and install pacakges, use the ```install.packages("Package Name")``` function.
 
-For today, you will be needing the data.table package:
+For today, you will be needing the following packages:
 
 ```install.packages(data.table)```
+```install.packages(car)```
 
 Another package that is useful to have is the swirl tutorial package:
 
@@ -383,7 +384,6 @@ barplot(bar, col=c("darkblue","red"), ylim = c(0, max(dmef_small[, .N, by = PROD
 legend("top", legend = c("Returned", "Not Returned"), fill = c("darkblue", "red"))
 ```
 
-
 This all looks nice and stuff, but let's try to think what this chart means. Each barplot represents the distribution of returned and non-returned goods respectively. For example, we can see that products C, E, P and T were by far the most popular products based on volume of sales. However, take note of the small blue bars representing the number of returned goods for that product category. Although T has a marginally higher sales volume, C has a larger number of returned goods!
 
 Let's break that information further into a more easily understandable format, and find out the percentage of goods returned for each product category.
@@ -457,7 +457,7 @@ We can see there isn't a very distinct linear relationship, which can hurt our l
 plot(mtcars[, mpg], log(mtcars[, hp]))
 ```
 
-And that looks significantly better. Let's try this new adjusted hp in this regression model.
+And that looks significantly better. Let's try this new adjusted hp in this regression model. Using the same steps as before:
 
 ```{r}
 fit_transformed <- lm(mpg ~ . - hp + log(hp), data=mtcars)
@@ -467,13 +467,35 @@ fit_final <- lm(mpg ~ wt + am + log(hp), data=mtcars)
 summary(fit_final)
 ```
 
+However, having a good fot for the regression model is not all that matter. You need to check if your four regression assumptions are met. The four are normality, homoscedasticity, linearity and independence of errors. The independence of errors assumption generally applies to time series data.
+
 ```{r}
 # Regression Assumptions
 plot(fit_final)
+```
+
+The first plot tests your assumptions for linearity and homoscedasticity. Firstly, if the red line is straight, then the assumption for linearity has been cleared. In this case, although the red line is not straight, we can see that this is due to a few outliers in the top right corner, while the bulk of the data points are roughly linear, and we can accept this. Secondly, we need to ensure that the variance between the data points are constant. Looking at this dataset, there data points appear evenly distributed and there is no distinct change in variance. Hence, the assumption for homoscedasticity is considered valid.
+
+The second plot is used to test for normality. The regression assumes that the data points follow a normal distribution and if this is the case the data points on the QQ plot should closely align to the line on the chart. In this plot we can see that this is so and hence we can hold the assumption for normality.
+
+The last chart measures cook's distance, which is the acceptable range for outliers. the red dotted line at the corner measures limit for outliers, and since none of our data points reside outside that line, we can accept this regression model.
+
+```{r}
+library(car)
+durbinWatsonTest(final_fit)
+```
+
+The last test is the test for independence of errors. This generally only applies to data collected over a period of time to ensure that each data point is indepedent of each other. For this, we run the Durbin Watson test. As long as the Durbin Watson Statistic is between 1.5 and 2.5, the assumption for independence of errors is valid.
+
+```{r}
 # Check for multi-collinearity
 # Anything below 10 is okay
-# vif(fit_final)
+# install.packages('car')
+library(car)
+vif(fit_final)
 ```
+
+Lastly, if two variables in your regression model are highly correlated, it can affect the outcome of your regression. Hence, we run the Variance Inflation Factor test to ensure that the variables used in your regression model are not correlated. As long as all of the vif values are less than 10, the regression model will hold.
 
 ---TODO---
 
