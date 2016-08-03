@@ -69,8 +69,13 @@ if (q2) cat("Passed\n") else  cat("Failed\n")
 ########
 cat("Testing Qn3....")
 
+# Check iris dataset exists
+if (!exists("iris_dt")) {
+  warning(paste("'iris_dt' does not exist. Did you remember to save it as",
+                "'iris_dt'?"))
+
 # Check number of rows
-if (nrow(iris_dt) != 150) {
+} else if (nrow(iris_dt) != 150) {
   warning("'iris_dt' has the wrong number of rows.")
 
 # Check number of columns
@@ -117,8 +122,8 @@ if (!(exists("fit_1"))) {
   warning("'fit_1' has the wrong number of regressors!")
 
 # Check the coefficients of fit_1     
-} else if (!(all.equal(as.numeric(coefficients(fit_1)), 
-                       c(1.85600, 0.70913, -0.55648, 0.65084), 
+} else if (!(all.equal(sort(as.numeric(coefficients(fit_1))), 
+                       sort(c(1.85600, 0.70913, -0.55648, 0.65084)), 
                        tolerance=1e-3))) {
   warning("Check your model. It seems to have the wrong coefficients.")
   
@@ -144,8 +149,8 @@ if (!exists("fit_2")) {
   warning("'fit_2' has the wrong number of regressors!")
   
 # Check the coefficients of fit_2     
-} else if (!(all.equal(as.numeric(coefficients(fit_2)), 
-                       c(2.0883, 0.0339, 0.6634, 0.6087), 
+} else if (!(all.equal(sort(as.numeric(coefficients(fit_2))), 
+                       sort(c(2.0883, 0.0339, 0.6634, 0.6087)), 
                        tolerance=1e-3))) {
   warning("Check your model. It seems to have the wrong coefficients.")
   

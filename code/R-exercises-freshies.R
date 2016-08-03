@@ -6,27 +6,27 @@
 #####################
 # Set your working environment
 
-########################
-#### YOUR CODE HERE ####
-########################
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 ##############
 # Question 1 #
 ##############
 # Import dataset from iris.csv
 
-########################
-#### YOUR CODE HERE ####
-########################
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 ##############
 # Question 2 #
 ##############
 # iris is now a data.frame. Convert it to a data.table and name it iris_dt
 
-########################
-#### YOUR CODE HERE ####
-########################
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 ##############
 # Question 3 #
@@ -36,9 +36,9 @@
 # versicolor --> 'blue'
 # virginica --> 'red'
 
-########################
-#### YOUR CODE HERE ####
-########################
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 ##############
 # Question 4 #
@@ -46,9 +46,9 @@
 # Perform linear regression and save the linear model to 'fit_1'
 # Use Petal.Width, Petal.Length and Sepal.Width to predict Sepal.Length 
 
-########################
-#### YOUR CODE HERE ####
-########################
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 summary(fit_1)
 
@@ -64,9 +64,9 @@ plot(iris_dt$Sepal.Length, iris_dt$Petal.Length)
 # Check the multi-collinearity of the model 'fit_1'
 library(car)
 
-########################
-#### YOUR CODE HERE ####
-########################
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 
 # Is multi-collinearity a problem with your dataset?
@@ -74,20 +74,23 @@ library(car)
 #  1 - Remove problematic variable
 #  2 - Transform variable
 
+# In this case, we'll use (2) - transforming the variable.
 # Let's try transforming the two variables into Petal.Area and Petal.Diff, 
 # adding these two new columns to the 'iris_dt' dataset.
 # Petal Area is the product of Petal.Length and Petal.Width
 # Petal Diff is the difference btwn Petal Length and Petal Width
-iris_dt[, Petal.Area := Petal.Length * Petal.Width]
-iris_dt[, Petal.Diff := Petal.Length - Petal.Width]
+
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 # And redoing the linear regression using the new variables
 # Specifically, we want to regress Sepal.Length again Petal.Area, Petal.Diff
 # and Sepal.Width. Save this to fit_2
 
-########################
-#### YOUR CODE HERE ####
-########################
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 summary(fit_2)
 
@@ -101,30 +104,30 @@ pairs(iris_dt[, .(Sepal.Length, Petal.Area, Petal.Diff, Sepal.Width)],
 
 # Verify no multi-collinearity in this model
 
-########################
-#### YOUR CODE HERE ####
-########################
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 ##############
 # Question 6 #
 ##############
 # Subset the data.table 'iris_dt' to get only the species 'setosa'
 
-########################
-#### YOUR CODE HERE ####
-########################
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 # Now repeat the above with versicolor and virginica
 
-########################
-#### YOUR CODE HERE ####
-########################
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 # Use a boxplot to compare the Petal.Area of the different Species
 
-########################
-#### YOUR CODE HERE ####
-########################
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 #########
 # Extra #
@@ -143,11 +146,9 @@ pairs(iris_dt[, .(Sepal.Length, Petal.Area, Petal.Diff, Sepal.Width)],
 # 50000
 
 
-########################
-#### YOUR CODE HERE ####
-########################
-
-
+#****************#
+#*YOUR CODE HERE*#
+#****************#
 
 ###########
 # Grading #
