@@ -234,7 +234,7 @@
     })
 
     $(document).ready(function() {
-      $(".output").trigger("click");
+      $(".output").trigger('click');
     })
   
   });
@@ -869,7 +869,6 @@
 <body>
 <div id="header">
 <h1 class="title">Introductory Data Munging in R</h1>
-<h2 class="author">Ken Oung Yong Quan</h2>
 <h3 class="date">23 July 2016</h3>
 </div>
 <title>
@@ -2134,7 +2133,7 @@ durbinWatsonTest(fit_final)</code></pre>
 <span class="glyphicon glyphicon-chevron-down"></span> R output
 </button>
 <pre style=""><code class="output r">##  lag Autocorrelation D-W Statistic p-value
-##    1      0.06134832      1.796144   0.394
+##    1      0.06134832      1.796144   0.346
 ##  Alternative hypothesis: rho != 0
 </code></pre>
 </div>
@@ -2155,55 +2154,6 @@ vif(fit_final)</code></pre>
 </code></pre>
 </div>
 Lastly, if two variables in your regression model are highly correlated, it can affect the outcome of your regression. Hence, we run the Variance Inflation Factor test to ensure that the variables used in your regression model are not correlated. As long as all of the vif values are less than 10, the regression model will hold.
-</div>
-</div>
-<div class="navbar navbar-fixed-bottom navbar-inverse">
-<div class="container">
-<div class="navbar-header">
-<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-<span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-</button>
-</div>
-<div id="bottom-navbar" class="navbar-collapse collapse navbar-responsive-collapse">
-<ul class="nav navbar-nav navbar-right">
-<li class="nav">
-<p class="navbar-text">
-Toggle
-</p>
-</li>
-<li class="dropup">
-<a href="#" class="dropdown-toggle" data-toggle="dropdown">Code <b class="caret"></b></a>
-<ul class="dropdown-menu">
-<li class="dropdown-header">
-Languages
-</li>
-<li class="active">
-<a href="#" class="toggle-global source R" type="source.R">R</a>
-</li>
-<li>
-<a href="#" type="all-source" class="toggle-global">All</a>
-</li>
-</ul>
-</li>
-<li class="dropup">
-<a href="#" class="dropdown-toggle" data-toggle="dropdown">Output <b class="caret"></b></a>
-<ul class="dropdown-menu">
-<li class="dropdown-header">
-Type
-</li>
-<li class="active">
-<a href="#" class="toggle-global output" type="output">output</a>
-</li>
-<li>
-<a href="#" type="all-output" class="toggle-global">All</a>
-</li>
-</ul>
-</li>
-<li class="active">
-<a href="#" type="figure" class="toggle-global">Figures</a>
-</li>
-</ul>
-</div>
 </div>
 </div>
 </div>
