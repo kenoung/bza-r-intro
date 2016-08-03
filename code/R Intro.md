@@ -521,7 +521,7 @@ head(unique_ex1[QUANTITY > 1])
 6:     975592        2     49.90      24.95
 ```
 
-Groupwork
+Sorting by Groups
 ========================================================
 incremental:true
 
@@ -611,18 +611,6 @@ Simple Histograms
 incremental:true
 class:small-code
 
-```r
-dmef_small[, PRICE := EXT_PRICE/QUANTITY]
-```
-
-```r
-object.price <- dmef_small[, .(PRODUCT_NO, PRODUCT_CATEGORY_ID, PRICE)]
-```
-
-```r
-unique(object.price, by = c("PRODUCT_NO", "PRICE"))
-```
-
 ```
       PRODUCT_NO PRODUCT_CATEGORY_ID  PRICE
    1:     987668                   C  79.95
@@ -639,8 +627,22 @@ unique(object.price, by = c("PRODUCT_NO", "PRICE"))
 ```
 
 ```r
+dmef_small[, PRICE := EXT_PRICE/QUANTITY]
+```
+
+```r
+object.price <- dmef_small[, .(PRODUCT_NO, PRODUCT_CATEGORY_ID, PRICE)]
+```
+
+```r
+unique(object.price, by = c("PRODUCT_NO", "PRICE"))
+```
+
+```r
 uniq.object.price <- unique(object.price, by = c("PRODUCT_NO", "PRICE"))
 ```
+
+
 
 All That, Just For This
 ========================================================
@@ -650,7 +652,7 @@ transition: fade
 hist(uniq.object.price[, PRICE],main = "Histogram of all prices",xlab = "Price")
 ```
 
-<img src="R Intro-figure/unnamed-chunk-27-1.png" title="plot of chunk unnamed-chunk-27" alt="plot of chunk unnamed-chunk-27" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-29-1.png" title="plot of chunk unnamed-chunk-29" alt="plot of chunk unnamed-chunk-29" style="display: block; margin: auto;" />
 
 Break It Down
 ========================================================
@@ -663,7 +665,8 @@ hist(uniq.object.price[PRICE < 100, PRICE], breaks=100,
      xlab = "Price")
 ```
 
-<img src="R Intro-figure/unnamed-chunk-28-1.png" title="plot of chunk unnamed-chunk-28" alt="plot of chunk unnamed-chunk-28" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-30-1.png" title="plot of chunk unnamed-chunk-30" alt="plot of chunk unnamed-chunk-30" style="display: block; margin: auto;" />
+
 
 Nitpicking
 ========================================================
@@ -690,7 +693,7 @@ hist(uniq.object.price[, ONES.PLACE],
      xlab = "Ones Place")
 ```
 
-<img src="R Intro-figure/unnamed-chunk-31-1.png" title="plot of chunk unnamed-chunk-31" alt="plot of chunk unnamed-chunk-31" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-33-1.png" title="plot of chunk unnamed-chunk-33" alt="plot of chunk unnamed-chunk-33" style="display: block; margin: auto;" />
 
 And Cents
 ========================================================
@@ -717,7 +720,7 @@ hist(uniq.object.price[, CENTS], breaks=100,
      xlab = "Cents")
 ```
 
-<img src="R Intro-figure/unnamed-chunk-34-1.png" title="plot of chunk unnamed-chunk-34" alt="plot of chunk unnamed-chunk-34" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-36-1.png" title="plot of chunk unnamed-chunk-36" alt="plot of chunk unnamed-chunk-36" style="display: block; margin: auto;" />
 
 What Have I Done
 ========================================================
@@ -836,7 +839,7 @@ Boxing Day
 boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE])
 ```
 
-<img src="R Intro-figure/unnamed-chunk-43-1.png" title="plot of chunk unnamed-chunk-43" alt="plot of chunk unnamed-chunk-43" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-45-1.png" title="plot of chunk unnamed-chunk-45" alt="plot of chunk unnamed-chunk-45" style="display: block; margin: auto;" />
 
 Malcolm Gladwell
 ========================================================
@@ -849,7 +852,7 @@ boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
         outline=F)
 ```
 
-<img src="R Intro-figure/unnamed-chunk-44-1.png" title="plot of chunk unnamed-chunk-44" alt="plot of chunk unnamed-chunk-44" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-46-1.png" title="plot of chunk unnamed-chunk-46" alt="plot of chunk unnamed-chunk-46" style="display: block; margin: auto;" />
 
 Side by Side
 ========================================================
@@ -861,7 +864,7 @@ boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
         names = c("returned", "not returned"))
 ```
 
-![plot of chunk unnamed-chunk-45](R Intro-figure/unnamed-chunk-45-1.png)
+![plot of chunk unnamed-chunk-47](R Intro-figure/unnamed-chunk-47-1.png)
 ***
 
 ```r
@@ -870,7 +873,7 @@ boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
         outline=F)
 ```
 
-![plot of chunk unnamed-chunk-46](R Intro-figure/unnamed-chunk-46-1.png)
+![plot of chunk unnamed-chunk-48](R Intro-figure/unnamed-chunk-48-1.png)
 
 Big Spenders
 ========================================================
@@ -883,7 +886,7 @@ boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
         names = c("Returned", "Not Returned"))
 ```
 
-<img src="R Intro-figure/unnamed-chunk-47-1.png" title="plot of chunk unnamed-chunk-47" alt="plot of chunk unnamed-chunk-47" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-49-1.png" title="plot of chunk unnamed-chunk-49" alt="plot of chunk unnamed-chunk-49" style="display: block; margin: auto;" />
 
 A Barplot is NOT a Histogram
 ========================================================
@@ -895,7 +898,7 @@ bar1 <- returned[, .N, by = PRODUCT_CATEGORY_ID]
 barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID])
 ```
 
-<img src="R Intro-figure/unnamed-chunk-48-1.png" title="plot of chunk unnamed-chunk-48" alt="plot of chunk unnamed-chunk-48" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-50-1.png" title="plot of chunk unnamed-chunk-50" alt="plot of chunk unnamed-chunk-50" style="display: block; margin: auto;" />
 
 And a Histogram is NOT a Barplot
 ========================================================
@@ -908,7 +911,7 @@ bar2 <- not.returned[, .N, by = PRODUCT_CATEGORY_ID]
 barplot(bar2[,N], names = bar2[,PRODUCT_CATEGORY_ID])
 ```
 
-<img src="R Intro-figure/unnamed-chunk-49-1.png" title="plot of chunk unnamed-chunk-49" alt="plot of chunk unnamed-chunk-49" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-51-1.png" title="plot of chunk unnamed-chunk-51" alt="plot of chunk unnamed-chunk-51" style="display: block; margin: auto;" />
 
 Combining Bar Plots
 ========================================================
@@ -1012,7 +1015,7 @@ legend("top",
 
 Whew
 ========================================================
-<img src="R Intro-figure/unnamed-chunk-58-1.png" title="plot of chunk unnamed-chunk-58" alt="plot of chunk unnamed-chunk-58" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-60-1.png" title="plot of chunk unnamed-chunk-60" alt="plot of chunk unnamed-chunk-60" style="display: block; margin: auto;" />
 
 Yes, There's an Easier Way
 ========================================================
@@ -1079,10 +1082,11 @@ legend("top", legend = c("Returned", "Not Returned"),
        fill = c("darkblue", "red"))
 ```
 
-<img src="R Intro-figure/unnamed-chunk-61-1.png" title="plot of chunk unnamed-chunk-61" alt="plot of chunk unnamed-chunk-61" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-63-1.png" title="plot of chunk unnamed-chunk-63" alt="plot of chunk unnamed-chunk-63" style="display: block; margin: auto;" />
 
 Just Kidding
 ========================================================
+class:small-code
 
 ```r
 perc.returned.by.cat <- dmef_small[order(PRODUCT_CATEGORY_ID), 
@@ -1098,7 +1102,7 @@ barplot(perc.returned.by.cat[, Percentage.Returned],
 
 Room for Improvement
 ========================================================
-<img src="R Intro-figure/unnamed-chunk-64-1.png" title="plot of chunk unnamed-chunk-64" alt="plot of chunk unnamed-chunk-64" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-66-1.png" title="plot of chunk unnamed-chunk-66" alt="plot of chunk unnamed-chunk-66" style="display: block; margin: auto;" />
 
 Final Boss
 ========================================================
@@ -1240,7 +1244,7 @@ Oh Right, Scatterplots
 plot(mtcars[, mpg], mtcars[, hp])
 ```
 
-<img src="R Intro-figure/unnamed-chunk-71-1.png" title="plot of chunk unnamed-chunk-71" alt="plot of chunk unnamed-chunk-71" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-73-1.png" title="plot of chunk unnamed-chunk-73" alt="plot of chunk unnamed-chunk-73" style="display: block; margin: auto;" />
 
 Trust Me, It's Significant
 ========================================================
@@ -1249,7 +1253,8 @@ Trust Me, It's Significant
 plot(mtcars[, mpg], log(mtcars[, hp]))
 ```
 
-<img src="R Intro-figure/unnamed-chunk-72-1.png" title="plot of chunk unnamed-chunk-72" alt="plot of chunk unnamed-chunk-72" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-74-1.png" title="plot of chunk unnamed-chunk-74" alt="plot of chunk unnamed-chunk-74" style="display: block; margin: auto;" />
+
 
 All Regressions Are Equal
 ========================================================
@@ -1298,11 +1303,54 @@ F-statistic: 62.01 on 3 and 28 DF,  p-value: 1.747e-12
 But Some Are More Equal Than Others
 ========================================================
 class:smaller-code
+incremental:true
+- Linearity
+- Normality
+- Homoscedasticity
+- Independence of Errors (time series)
+
+
+Drawing Lines
+========================================================
+class:smaller-code
 
 ```r
 par(mfrow=c(2,2))
 plot(fit_final)
 ```
 
-<img src="R Intro-figure/unnamed-chunk-77-1.png" title="plot of chunk unnamed-chunk-77" alt="plot of chunk unnamed-chunk-77" style="display: block; margin: auto;" />
+<img src="R Intro-figure/unnamed-chunk-79-1.png" title="plot of chunk unnamed-chunk-79" alt="plot of chunk unnamed-chunk-79" style="display: block; margin: auto;" />
+
+
+
+Multicollinearity
+========================================================
+incremental:true
+
+```r
+library(car)
+durbinWatsonTest(fit_final)
+```
+
+```
+ lag Autocorrelation D-W Statistic p-value
+   1      0.06134832      1.796144   0.438
+ Alternative hypothesis: rho != 0
+```
+
+```r
+vif(fit_final)
+```
+
+```
+      wt       am  log(hp) 
+3.806564 2.108117 2.250186 
+```
+
+
+
+
+
+
+
 

@@ -200,7 +200,7 @@ unique_ex1 <- unique_ex1[, unit_price := EXT_PRICE/QUANTITY]
 head(unique_ex1[QUANTITY > 1])
 ```
 
-Groupwork
+Sorting by Groups
 ========================================================
 incremental:true
 ```{r}
@@ -247,16 +247,25 @@ Simple Histograms
 ========================================================
 incremental:true
 class:small-code
+```{r, echo = FALSE}
+dmef_small[, PRICE := EXT_PRICE/QUANTITY]
+object.price <- dmef_small[, .(PRODUCT_NO, PRODUCT_CATEGORY_ID, PRICE)]
+unique(object.price, by = c("PRODUCT_NO", "PRICE"))
+```
 ```{r}
 dmef_small[, PRICE := EXT_PRICE/QUANTITY]
 ```
 ```{r}
 object.price <- dmef_small[, .(PRODUCT_NO, PRODUCT_CATEGORY_ID, PRICE)]
 ```
-```{r}
+```{r, eval = FALSE}
 unique(object.price, by = c("PRODUCT_NO", "PRICE"))
+```
+```{r}
 uniq.object.price <- unique(object.price, by = c("PRODUCT_NO", "PRICE"))
 ```
+
+
 
 All That, Just For This
 ========================================================
@@ -274,6 +283,7 @@ hist(uniq.object.price[PRICE < 100, PRICE], breaks=100,
      main = "Histogram of Prices below 100",
      xlab = "Price")
 ```
+
 
 Nitpicking
 ========================================================
@@ -520,6 +530,7 @@ legend("top", legend = c("Returned", "Not Returned"),
 
 Just Kidding
 ========================================================
+class:small-code
 ```{R}
 perc.returned.by.cat <- dmef_small[order(PRODUCT_CATEGORY_ID), 
                                    .(Percentage.Returned=.SD[RETN_QTY>0, .N]/.N*100),
@@ -596,6 +607,7 @@ Trust Me, It's Significant
 plot(mtcars[, mpg], log(mtcars[, hp]))
 ```
 
+
 All Regressions Are Equal
 ========================================================
 incremental:true
@@ -616,8 +628,36 @@ summary(fit_final)
 But Some Are More Equal Than Others
 ========================================================
 class:smaller-code
+incremental:true
+- Linearity
+- Normality
+- Homoscedasticity
+- Independence of Errors (time series)
+
+
+Drawing Lines
+========================================================
+class:smaller-code
 ```{r, fig.align='center', strip.white=TRUE, fig.width = 10, fig.height = 7.5}
 par(mfrow=c(2,2))
 plot(fit_final)
 ```
+
+
+
+Multicollinearity
+========================================================
+incremental:true
+```{r}
+library(car)
+durbinWatsonTest(fit_final)
+vif(fit_final)
+```
+
+
+
+
+
+
+
 
