@@ -476,7 +476,12 @@ fit_final <- lm(mpg ~ wt + am + log(hp), data=mtcars)
 summary(fit_final)
 ```
 
-However, having a good fot for the regression model is not all that matter. You need to check if your four regression assumptions are met. The four are normality, homoscedasticity, linearity and independence of errors. The independence of errors assumption generally applies to time series data.
+However, having a good fit for the regression model is not all that matters. You need to check if your four regression assumptions are met. The four assumptions include:
+
+- normality
+- homoscedasticity
+- linearity 
+- independence of errors (generally applies to time series data)
 
 ```{r}
 # Regression Assumptions
@@ -487,7 +492,7 @@ The first plot tests your assumptions for linearity and homoscedasticity. Firstl
 
 The second plot is used to test for normality. The regression assumes that the data points follow a normal distribution and if this is the case the data points on the QQ plot should closely align to the line on the chart. In this plot we can see that this is so and hence we can hold the assumption for normality.
 
-The last chart measures cook's distance, which is the acceptable range for outliers. the red dotted line at the corner measures limit for outliers, and since none of our data points reside outside that line, we can accept this regression model.
+The last chart measures Cook's distance, which is the acceptable range for outliers. the red dotted line at the corner measures limit for outliers, and since none of our data points reside outside that line, we can accept this regression model.
 
 ```{r}
 library(car)

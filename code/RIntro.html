@@ -2091,7 +2091,13 @@ summary(fit_final)</code></pre>
 ## F-statistic: 62.01 on 3 and 28 DF,  p-value: 1.747e-12
 </code></pre>
 </div>
-<p>However, having a good fot for the regression model is not all that matter. You need to check if your four regression assumptions are met. The four are normality, homoscedasticity, linearity and independence of errors. The independence of errors assumption generally applies to time series data.</p>
+<p>However, having a good fit for the regression model is not all that matters. You need to check if your four regression assumptions are met. The four assumptions include:</p>
+<ul>
+<li>normality</li>
+<li>homoscedasticity</li>
+<li>linearity</li>
+<li>independence of errors (generally applies to time series data)</li>
+</ul>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -2121,7 +2127,7 @@ plot(fit_final)</code></pre>
 </div>
 <p>The first plot tests your assumptions for linearity and homoscedasticity. Firstly, if the red line is straight, then the assumption for linearity has been cleared. In this case, although the red line is not straight, we can see that this is due to a few outliers in the top right corner, while the bulk of the data points are roughly linear, and we can accept this. Secondly, we need to ensure that the variance between the data points are constant. Looking at this dataset, there data points appear evenly distributed and there is no distinct change in variance. Hence, the assumption for homoscedasticity is considered valid.</p>
 <p>The second plot is used to test for normality. The regression assumes that the data points follow a normal distribution and if this is the case the data points on the QQ plot should closely align to the line on the chart. In this plot we can see that this is so and hence we can hold the assumption for normality.</p>
-<p>The last chart measures cook's distance, which is the acceptable range for outliers. the red dotted line at the corner measures limit for outliers, and since none of our data points reside outside that line, we can accept this regression model.</p>
+<p>The last chart measures Cook's distance, which is the acceptable range for outliers. the red dotted line at the corner measures limit for outliers, and since none of our data points reside outside that line, we can accept this regression model.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
@@ -2132,7 +2138,7 @@ durbinWatsonTest(fit_final)</code></pre>
 <span class="glyphicon glyphicon-chevron-down"></span> R output
 </button>
 <pre style=""><code class="output r">##  lag Autocorrelation D-W Statistic p-value
-##    1      0.06134832      1.796144   0.346
+##    1      0.06134832      1.796144   0.352
 ##  Alternative hypothesis: rho != 0
 </code></pre>
 </div>
