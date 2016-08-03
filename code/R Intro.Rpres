@@ -40,7 +40,7 @@ incremental: true
 - Selina
 - Jian Sheng
 
-Business Analytics
+Analytics, Schmanalytics
 ========================================================
 transition: fade
 incremental: true
@@ -74,7 +74,7 @@ transition: fade
 title: false
 
 <div class="midcenter" style="margin-left:-112.5px; margin-top:-112.5px;">
-<img src="Rstudio.jpg"></img>
+<img src="Rstudio.jpg" style="background-color:transparent; border:0px; box-shadow:none;"></img>
 </div>
 
 Importing Data
@@ -290,6 +290,7 @@ Dollars
 ========================================================
 transition:fade
 class:small-code
+incremental:true
 ```{r, fig.align='center'}
 hist(uniq.object.price[, ONES.PLACE],
      main = "Histogram of Ones Place",
@@ -311,6 +312,7 @@ Penny Wise, Pound Foolish
 ========================================================
 transition:fade
 class: small-code
+incremental:true
 ```{r, fig.align='center'}
 hist(uniq.object.price[, CENTS], breaks=100,
      main = "Histogram of Cents Portion",
@@ -405,6 +407,7 @@ boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
 Big Spenders
 ========================================================
 class:small-code
+incremental:true
 ```{r, fig.align = 'center'}
 boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
         main = "Extended Prices for Returned vs Not Returned Goods",
@@ -423,6 +426,7 @@ barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID])
 And a Histogram is NOT a Barplot
 ========================================================
 class:small-code
+incremental:true
 ```{r, fig.align='center'}
 bar2 <- not.returned[, .N, by = PRODUCT_CATEGORY_ID]
 
@@ -492,22 +496,25 @@ legend("top", legend = c("Returned", "Not Returned"), fill = c("darkblue", "red"
 Yes, There's an Easier Way
 ========================================================
 incremental:true
+class:smallest-code
 ```{r}
 bar <- bar1[,.(bar1[,N], bar2[,N])]
 ```
 ```{r}
+bar
+t(bar)
 bar <- as.matrix(t(bar))
 ```
 
 The Final Barplot
 ========================================================
-class:small-code
+class:smaller-code
 ```{r, fig.align='center'}
 barplot(bar, 
+        names = bar2[,as.character(PRODUCT_CATEGORY_ID)],
         col=c("darkblue","red"), 
         ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
-legend("top", 
-       legend = c("Returned", "Not Returned"), 
+legend("top", legend = c("Returned", "Not Returned"), 
        fill = c("darkblue", "red"))
 ```
 

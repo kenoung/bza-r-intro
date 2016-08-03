@@ -40,7 +40,7 @@ incremental: true
 - Selina
 - Jian Sheng
 
-Business Analytics
+Analytics, Schmanalytics
 ========================================================
 transition: fade
 incremental: true
@@ -74,7 +74,7 @@ transition: fade
 title: false
 
 <div class="midcenter" style="margin-left:-112.5px; margin-top:-112.5px;">
-<img src="Rstudio.jpg"></img>
+<img src="Rstudio.jpg" style="background-color:transparent; border:0px; box-shadow:none;"></img>
 </div>
 
 Importing Data
@@ -682,6 +682,7 @@ Dollars
 ========================================================
 transition:fade
 class:small-code
+incremental:true
 
 ```r
 hist(uniq.object.price[, ONES.PLACE],
@@ -708,6 +709,7 @@ Penny Wise, Pound Foolish
 ========================================================
 transition:fade
 class: small-code
+incremental:true
 
 ```r
 hist(uniq.object.price[, CENTS], breaks=100,
@@ -873,6 +875,7 @@ boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
 Big Spenders
 ========================================================
 class:small-code
+incremental:true
 
 ```r
 boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
@@ -897,6 +900,7 @@ barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID])
 And a Histogram is NOT a Barplot
 ========================================================
 class:small-code
+incremental:true
 
 ```r
 bar2 <- not.returned[, .N, by = PRODUCT_CATEGORY_ID]
@@ -1013,9 +1017,49 @@ Whew
 Yes, There's an Easier Way
 ========================================================
 incremental:true
+class:smallest-code
 
 ```r
 bar <- bar1[,.(bar1[,N], bar2[,N])]
+```
+
+```r
+bar
+```
+
+```
+      V1    V2
+ 1:  365  6815
+ 2:  675 12483
+ 3: 2528 31343
+ 4:   12   671
+ 5: 1618 29851
+ 6:  743 18603
+ 7:   13   220
+ 8:  920 18438
+ 9:    0    15
+10:  114  1641
+11:  365  9560
+12:  350  6489
+13:   42   684
+14:  162  2115
+15: 1465 31218
+16:   66  4139
+17:  895 33012
+18:  409  8090
+```
+
+```r
+t(bar)
+```
+
+```
+   [,1]  [,2]  [,3] [,4]  [,5]  [,6] [,7]  [,8] [,9] [,10] [,11] [,12]
+V1  365   675  2528   12  1618   743   13   920    0   114   365   350
+V2 6815 12483 31343  671 29851 18603  220 18438   15  1641  9560  6489
+   [,13] [,14] [,15] [,16] [,17] [,18]
+V1    42   162  1465    66   895   409
+V2   684  2115 31218  4139 33012  8090
 ```
 
 ```r
@@ -1024,14 +1068,14 @@ bar <- as.matrix(t(bar))
 
 The Final Barplot
 ========================================================
-class:small-code
+class:smaller-code
 
 ```r
 barplot(bar, 
+        names = bar2[,as.character(PRODUCT_CATEGORY_ID)],
         col=c("darkblue","red"), 
         ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
-legend("top", 
-       legend = c("Returned", "Not Returned"), 
+legend("top", legend = c("Returned", "Not Returned"), 
        fill = c("darkblue", "red"))
 ```
 
