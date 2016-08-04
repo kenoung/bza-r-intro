@@ -1,3 +1,16 @@
 base
 knitr
 data.table
+car
+ggplot2
+plotly
+webshot
+ggmap
+stringr
+plyr
+XML
+acs
+choroplethr
+choroplethrMaps
+zipcode
+networkD3
