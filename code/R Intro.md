@@ -85,9 +85,8 @@ Importing Data
 ========================================================
 incremental: true
 
-```r
-#Set your working directory to where all your files and codes are going to be saved.
 
+<<<<<<< HEAD
 setwd("~/R Intro/bza-r-intro/code")
 ```
 
@@ -570,412 +569,123 @@ head(unique_ex1[QUANTITY > 1])
 5:     982117        2     79.90      39.95
 6:     975592        2     49.90      24.95
 ```
-
-Sorting by Groups
-========================================================
-incremental:true
-
-```r
-head(ex1[,.(total = sum(EXT_PRICE)), by = PRODUCT_NO])
-```
-
-```
-   PRODUCT_NO    total
-1:     987668  5726.40
-2:     989457  8374.05
-3:     986782 40994.15
-4:     986620 16996.60
-5:     989973  1498.50
-6:     989049   999.75
-```
-
-...Deja Vu?
-========================================================
-incremental:true
-class:small-code
-
-```r
-head(ex1[,.(unit = sum(EXT_PRICE)/sum(QUANTITY)), by = PRODUCT_NO])
-```
-
-```
-   PRODUCT_NO      unit
-1:     987668  79.53333
-2:     989457  70.37017
-3:     986782 350.37735
-4:     986620 249.95000
-5:     989973  49.95000
-6:     989049 199.95000
-```
-***
-
-```r
-head(unique_ex1[,.(PRODUCT_NO, unit_price)])
-```
-
-```
-   PRODUCT_NO unit_price
-1:     987668      79.95
-2:     989457      69.95
-3:     986782     349.95
-4:     986620     249.95
-5:     989973      49.95
-6:     989049     199.95
-```
-
-Just Testing You Guys
-========================================================
-incremental:true
-
-```r
-ex1[PRODUCT_NO == 987668, .N, by = EXT_PRICE/QUANTITY]
-```
-
-```
-   EXT_PRICE  N
-1:     79.95 69
-2:     59.95  2
-3:     89.95  1
-```
-
-Phase II
-========================================================
-
-```r
-dmef_small <- dmef_dataset[, .(
-                        ORDER_NO,
-                        ZIP, 
-                        ORDER_LINE,
-                        PRODUCT_CATEGORY_ID, 
-                        CHANNEL, 
-                        PRODUCT_NO, 
-                        EXT_PRICE, 
-                        QUANTITY, 
-                        RETN_QTY,
-                        RETN_REVENUE
-                        )]
-```
-
-Simple Histograms
-========================================================
-incremental:true
-class:small-code
-
-```
-      PRODUCT_NO PRODUCT_CATEGORY_ID  PRICE
-   1:     987668                   C  79.95
-   2:     989457                   C  69.95
-   3:     986782                   E 349.95
-   4:     986620                   E 249.95
-   5:     989973                   E  49.95
-  ---                                      
-8905:     991774                   O 219.95
-8906:     991867                   F  49.95
-8907:     991868                   F  29.95
-8908:     991437                   T  99.95
-8909:     989685                   A 119.95
-```
-
-```r
-dmef_small[, PRICE := EXT_PRICE/QUANTITY]
-```
-
-```r
-object.price <- dmef_small[, .(PRODUCT_NO, PRODUCT_CATEGORY_ID, PRICE)]
-```
-
-```r
-unique(object.price, by = c("PRODUCT_NO", "PRICE"))
-```
-
-```r
-uniq.object.price <- unique(object.price, by = c("PRODUCT_NO", "PRICE"))
-```
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
 
 
-All That, Just For This
-========================================================
-transition: fade
 
-```r
-hist(uniq.object.price[, PRICE],main = "Histogram of all prices",xlab = "Price")
-```
 
+
+
+
+
+
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-30-1.png" title="plot of chunk unnamed-chunk-30" alt="plot of chunk unnamed-chunk-30" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-Break It Down
-========================================================
-transition: fade
-class:small-code
 
-```r
-hist(uniq.object.price[PRICE < 100, PRICE], breaks=100,
-     main = "Histogram of Prices below 100",
-     xlab = "Price")
-```
 
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-31-1.png" title="plot of chunk unnamed-chunk-31" alt="plot of chunk unnamed-chunk-31" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
 
-Nitpicking
-========================================================
-transition: fade
-incremental:true
 
-```r
-LastDigit <- function(x) { (x - x%%1) %% 10 }
-```
 
-```r
-uniq.object.price[, ONES.PLACE := LastDigit(PRICE)] 
-```
 
-Dollars
-========================================================
-transition:fade
-class:small-code
-incremental:true
 
-```r
-hist(uniq.object.price[, ONES.PLACE],
-     main = "Histogram of Ones Place",
-     xlab = "Ones Place")
-```
-
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-34-1.png" title="plot of chunk unnamed-chunk-34" alt="plot of chunk unnamed-chunk-34" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-And Cents
-========================================================
-transition: fade
-incremental:true
 
-```r
-Cents <- function(x) { round(100 * (x %% 1)) }
-```
 
-```r
-uniq.object.price[, CENTS := Cents(PRICE)]
-```
 
-Penny Wise, Pound Foolish
-========================================================
-transition:fade
-class: small-code
-incremental:true
 
-```r
-hist(uniq.object.price[, CENTS], breaks=100,
-     main = "Histogram of Cents Portion",
-     xlab = "Cents")
-```
-
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-37-1.png" title="plot of chunk unnamed-chunk-37" alt="plot of chunk unnamed-chunk-37" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-What Have I Done
-========================================================
-transition:fade
-incremental:true
-class:small-code
 
-```r
-uniq.object.price[, .N, by=CENTS][N>10]
-```
 
-```
-   CENTS    N
-1:    95 8614
-2:     0   95
-3:    99   14
-4:    97   14
-5:    90   11
-6:    96   31
-7:    77   12
-```
 
-Something More Productive
-========================================================
-transition:fade
-incremental: true
-class: small-code
 
-```r
-returned <- dmef_small[RETN_QTY > 0]
 
-not.returned <- dmef_small[RETN_QTY == 0]
-```
 
-```r
-table(dmef_small[, RETN_QTY==0])
-```
 
-```
 
- FALSE   TRUE 
- 10742 215387 
-```
 
-```r
-nrow(returned)
-nrow(not.returned)
-```
 
-```
-[1] 10742
-[1] 215387
-```
 
-```r
-nrow(returned)/nrow(dmef_small) * 100
-```
 
-```
-[1] 4.750386
-```
 
-Price Tag
-========================================================
-transition:fade
-incremental: true
-class: small-code
 
-```r
-returned.object.price <- uniq.object.price[PRODUCT_NO %in% returned[, PRODUCT_NO]]
 
-not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]
-```
 
-```r
-returned.object.price
-not.returned.object.price
-```
 
-Price Tag
-========================================================
-class: small-code
-transition: fade
 
-```
-      PRODUCT_NO PRODUCT_CATEGORY_ID  PRICE ONES.PLACE CENTS
-   1:     987668                   C  79.95          9    95
-   2:     989457                   C  69.95          9    95
-   3:     986782                   E 349.95          9    95
-   4:     986620                   E 249.95          9    95
-   5:     985438                   P 199.95          9    95
-  ---                                                       
-3682:     989512                   C  79.95          9    95
-3683:     985060                   C  69.95          9    95
-3684:     986816                   H 389.95          9    95
-3685:     989161                   P  77.95          7    95
-3686:     989685                   A 119.95          9    95
-      PRODUCT_NO PRODUCT_CATEGORY_ID  PRICE ONES.PLACE CENTS
-   1:     987668                   C  79.95          9    95
-   2:     989457                   C  69.95          9    95
-   3:     986782                   E 349.95          9    95
-   4:     986620                   E 249.95          9    95
-   5:     989973                   E  49.95          9    95
-  ---                                                       
-8840:     991774                   O 219.95          9    95
-8841:     991867                   F  49.95          9    95
-8842:     991868                   F  29.95          9    95
-8843:     991437                   T  99.95          9    95
-8844:     989685                   A 119.95          9    95
-```
 
-Boxing Day
-========================================================
 
-```r
-boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE])
-```
 
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-46-1.png" title="plot of chunk unnamed-chunk-46" alt="plot of chunk unnamed-chunk-46" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-Malcolm Gladwell
-========================================================
-class:small-code
 
-```r
-boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
-        main = "Product Prices for Returned vs Not Returned Goods",
-        names = c("returned", "not returned"),
-        outline=F)
-```
 
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-47-1.png" title="plot of chunk unnamed-chunk-47" alt="plot of chunk unnamed-chunk-47" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-Side by Side
-========================================================
-class:small-code
-incremental:true
 
-```r
-boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
-        names = c("returned", "not returned"))
-```
 
+<<<<<<< HEAD
 ![plot of chunk unnamed-chunk-48](R Intro-figure/unnamed-chunk-48-1.png)
 ***
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-```r
-boxplot(returned.object.price[, PRICE],not.returned.object.price[, PRICE],
-        names = c("returned", "not returned"),
-        outline=F)
-```
 
+<<<<<<< HEAD
 ![plot of chunk unnamed-chunk-49](R Intro-figure/unnamed-chunk-49-1.png)
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-Big Spenders
-========================================================
-class:small-code
-incremental:true
 
-```r
-boxplot(returned[, EXT_PRICE], not.returned[, EXT_PRICE], outline=F,
-        main = "Extended Prices for Returned vs Not Returned Goods",
-        names = c("Returned", "Not Returned"))
-```
 
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-50-1.png" title="plot of chunk unnamed-chunk-50" alt="plot of chunk unnamed-chunk-50" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-A Barplot is NOT a Histogram
-========================================================
-class:small-code
 
-```r
-bar1 <- returned[, .N, by = PRODUCT_CATEGORY_ID]
 
-barplot(bar1[,N], names = bar1[,PRODUCT_CATEGORY_ID])
-```
 
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-51-1.png" title="plot of chunk unnamed-chunk-51" alt="plot of chunk unnamed-chunk-51" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-And a Histogram is NOT a Barplot
-========================================================
-class:small-code
-incremental:true
 
-```r
-bar2 <- not.returned[, .N, by = PRODUCT_CATEGORY_ID]
 
-barplot(bar2[,N], names = bar2[,PRODUCT_CATEGORY_ID])
-```
 
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-52-1.png" title="plot of chunk unnamed-chunk-52" alt="plot of chunk unnamed-chunk-52" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-Combining Bar Plots
-========================================================
-incremental:true
-class:small-code
 
-```r
-bar1 <- rbind(bar1, data.table(PRODUCT_CATEGORY_ID = "I", N = 0))
-```
 
-```r
-bar1
-```
 
+<<<<<<< HEAD
 ```
     PRODUCT_CATEGORY_ID    N
  1:                   A  365
@@ -998,158 +708,40 @@ bar1
 18:                   X  409
 ```
 ***
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-```r
-bar1 <- bar1[order(PRODUCT_CATEGORY_ID)]
-bar2 <- bar2[order(PRODUCT_CATEGORY_ID)]
-```
 
-```r
-bar1
-```
 
-```
-    PRODUCT_CATEGORY_ID    N
- 1:                   A  365
- 2:                   B  675
- 3:                   C 2528
- 4:                   D   12
- 5:                   E 1618
- 6:                   F  743
- 7:                   G   13
- 8:                   H  920
- 9:                   I    0
-10:                   J  114
-11:                   K  365
-12:                   L  350
-13:                   M   42
-14:                   O  162
-15:                   P 1465
-16:                   S   66
-17:                   T  895
-18:                   X  409
-```
 
-Overlayering
-========================================================
-class:small-code
-incremental:true
 
-```r
-barplot(bar1[,N], 
-        names = bar1[,PRODUCT_CATEGORY_ID], 
-        border = "darkblue", 
-        col = "darkblue",  
-        density = 0, 
-        ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
-```
 
-```r
-par(new=TRUE)
-```
 
-```r
-barplot(bar2[,N], 
-        names = bar2[,PRODUCT_CATEGORY_ID], 
-        border = "red",
-        col = "red", 
-        density = 0, 
-        ylim = c(0,max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N]))) 
-```
 
-```r
-legend("top", 
-       legend = c("Returned", "Not Returned"), 
-       fill = c("darkblue", "red"))
-```
-
+<<<<<<< HEAD
 Whew
 ========================================================
 <img src="R Intro-figure/unnamed-chunk-61-1.png" title="plot of chunk unnamed-chunk-61" alt="plot of chunk unnamed-chunk-61" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-Yes, There's an Easier Way
-========================================================
-incremental:true
-class:smallest-code
 
-```r
-bar <- bar1[,.(bar1[,N], bar2[,N])]
-```
 
-```r
-bar
-```
 
-```
-      V1    V2
- 1:  365  6815
- 2:  675 12483
- 3: 2528 31343
- 4:   12   671
- 5: 1618 29851
- 6:  743 18603
- 7:   13   220
- 8:  920 18438
- 9:    0    15
-10:  114  1641
-11:  365  9560
-12:  350  6489
-13:   42   684
-14:  162  2115
-15: 1465 31218
-16:   66  4139
-17:  895 33012
-18:  409  8090
-```
 
-```r
-t(bar)
-```
 
-```
-   [,1]  [,2]  [,3] [,4]  [,5]  [,6] [,7]  [,8] [,9] [,10] [,11] [,12]
-V1  365   675  2528   12  1618   743   13   920    0   114   365   350
-V2 6815 12483 31343  671 29851 18603  220 18438   15  1641  9560  6489
-   [,13] [,14] [,15] [,16] [,17] [,18]
-V1    42   162  1465    66   895   409
-V2   684  2115 31218  4139 33012  8090
-```
 
-```r
-bar <- as.matrix(t(bar))
-```
 
-The Final Barplot
-========================================================
-class:smaller-code
 
-```r
-barplot(bar, 
-        names = bar2[,as.character(PRODUCT_CATEGORY_ID)],
-        col=c("darkblue","red"), 
-        ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
-legend("top", legend = c("Returned", "Not Returned"), 
-       fill = c("darkblue", "red"))
-```
-
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-64-1.png" title="plot of chunk unnamed-chunk-64" alt="plot of chunk unnamed-chunk-64" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-Just Kidding
-========================================================
-class:small-code
 
-```r
-perc.returned.by.cat <- dmef_small[order(PRODUCT_CATEGORY_ID), 
-                                   .(Percentage.Returned=.SD[RETN_QTY>0, .N]/.N*100),
-                                   by=PRODUCT_CATEGORY_ID]
-```
 
-```r
-barplot(perc.returned.by.cat[, Percentage.Returned], 
-        names=perc.returned.by.cat[, PRODUCT_CATEGORY_ID],
-        main = "Percentage of orders returned by category")
-```
 
+<<<<<<< HEAD
 Room for Improvement
 ========================================================
 <img src="R Intro-figure/unnamed-chunk-67-1.png" title="plot of chunk unnamed-chunk-67" alt="plot of chunk unnamed-chunk-67" style="display: block; margin: auto;" />
@@ -1164,245 +756,76 @@ type: red
 Final Boss
 ========================================================
 incremental: true
+=======
 
-```r
-data(mtcars)
-```
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-```r
-mtcars <- as.data.table(mtcars)
-```
 
-Getting Fits
-========================================================
-incremental: true
-class:smaller-code
 
-```r
-fit <- lm(mpg ~ ., data = mtcars)
-summary(fit)
-```
 
-```
 
-Call:
-lm(formula = mpg ~ ., data = mtcars)
 
-Residuals:
-    Min      1Q  Median      3Q     Max 
--3.4506 -1.6044 -0.1196  1.2193  4.6271 
 
-Coefficients:
-            Estimate Std. Error t value Pr(>|t|)  
-(Intercept) 12.30337   18.71788   0.657   0.5181  
-cyl         -0.11144    1.04502  -0.107   0.9161  
-disp         0.01334    0.01786   0.747   0.4635  
-hp          -0.02148    0.02177  -0.987   0.3350  
-drat         0.78711    1.63537   0.481   0.6353  
-wt          -3.71530    1.89441  -1.961   0.0633 .
-qsec         0.82104    0.73084   1.123   0.2739  
-vs           0.31776    2.10451   0.151   0.8814  
-am           2.52023    2.05665   1.225   0.2340  
-gear         0.65541    1.49326   0.439   0.6652  
-carb        -0.19942    0.82875  -0.241   0.8122  
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 2.65 on 21 degrees of freedom
-Multiple R-squared:  0.869,	Adjusted R-squared:  0.8066 
-F-statistic: 13.93 on 10 and 21 DF,  p-value: 3.793e-07
-```
 
-Streamlining
-========================================================
-incremental: true
-class:smaller-code
 
-```r
-fit_no_cyl <- lm(mpg ~ . - cyl, data = mtcars)
-summary(fit_no_cyl)
-```
 
-```
 
-Call:
-lm(formula = mpg ~ . - cyl, data = mtcars)
 
-Residuals:
-    Min      1Q  Median      3Q     Max 
--3.4286 -1.5908 -0.0412  1.2120  4.5961 
 
-Coefficients:
-            Estimate Std. Error t value Pr(>|t|)  
-(Intercept) 10.96007   13.53030   0.810   0.4266  
-disp         0.01283    0.01682   0.763   0.4538  
-hp          -0.02191    0.02091  -1.048   0.3062  
-drat         0.83520    1.53625   0.544   0.5921  
-wt          -3.69251    1.83954  -2.007   0.0572 .
-qsec         0.84244    0.68678   1.227   0.2329  
-vs           0.38975    1.94800   0.200   0.8433  
-am           2.57743    1.94035   1.328   0.1977  
-gear         0.71155    1.36562   0.521   0.6075  
-carb        -0.21958    0.78856  -0.278   0.7833  
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 2.59 on 22 degrees of freedom
-Multiple R-squared:  0.8689,	Adjusted R-squared:  0.8153 
-F-statistic: 16.21 on 9 and 22 DF,  p-value: 9.031e-08
-```
 
-One Eternity Later
-========================================================
-incremental: true
-class:smaller-code
 
-```r
-fit_improved <- lm(mpg ~ wt + qsec + am, data = mtcars)
-summary(fit_improved)
-```
 
-```
 
-Call:
-lm(formula = mpg ~ wt + qsec + am, data = mtcars)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--3.4811 -1.5555 -0.7257  1.4110  4.6610 
-
-Coefficients:
-            Estimate Std. Error t value Pr(>|t|)    
-(Intercept)   9.6178     6.9596   1.382 0.177915    
-wt           -3.9165     0.7112  -5.507 6.95e-06 ***
-qsec          1.2259     0.2887   4.247 0.000216 ***
-am            2.9358     1.4109   2.081 0.046716 *  
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 2.459 on 28 degrees of freedom
-Multiple R-squared:  0.8497,	Adjusted R-squared:  0.8336 
-F-statistic: 52.75 on 3 and 28 DF,  p-value: 1.21e-11
-```
-
-Of Course There's a Shortcut
-========================================================
-incremental: true
-
-```r
-library(MASS)
-stepAIC(fit)
-```
-
-Oh Right, Scatterplots
-========================================================
-
-```r
-plot(mtcars[, mpg], mtcars[, hp])
-```
-
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-74-1.png" title="plot of chunk unnamed-chunk-74" alt="plot of chunk unnamed-chunk-74" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-Trust Me, It's Significant
-========================================================
 
-```r
-plot(mtcars[, mpg], log(mtcars[, hp]))
-```
 
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-75-1.png" title="plot of chunk unnamed-chunk-75" alt="plot of chunk unnamed-chunk-75" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
 
-All Regressions Are Equal
-========================================================
-incremental:true
-class:smaller-code
-
-```r
-fit_transformed <- lm(mpg ~ . - hp + log(hp), data=mtcars)
-```
-
-```r
-stepAIC(fit_transformed)
-```
-
-```r
-fit_final <- lm(mpg ~ wt + am + log(hp), data=mtcars)
-```
-
-```r
-summary(fit_final)
-```
-
-```
-
-Call:
-lm(formula = mpg ~ wt + am + log(hp), data = mtcars)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--2.8148 -1.5495 -0.4402  1.1327  4.7638 
-
-Coefficients:
-            Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  58.9957     4.8970  12.047 1.36e-12 ***
-wt           -2.4681     0.8215  -3.005  0.00555 ** 
-am            1.7565     1.1987   1.465  0.15397    
-log(hp)      -6.4888     1.3004  -4.990 2.85e-05 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 2.294 on 28 degrees of freedom
-Multiple R-squared:  0.8692,	Adjusted R-squared:  0.8552 
-F-statistic: 62.01 on 3 and 28 DF,  p-value: 1.747e-12
-```
-
-But Some Are More Equal Than Others
-========================================================
-class:smaller-code
-incremental:true
-- Linearity
-- Normality
-- Homoscedasticity
-- Independence of Errors (time series)
 
 
-Drawing Lines
-========================================================
-class:smaller-code
 
-```r
-par(mfrow=c(2,2))
-plot(fit_final)
-```
 
+
+
+
+
+
+
+
+<<<<<<< HEAD
 <img src="R Intro-figure/unnamed-chunk-80-1.png" title="plot of chunk unnamed-chunk-80" alt="plot of chunk unnamed-chunk-80" style="display: block; margin: auto;" />
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
 
 
-Multicollinearity
-========================================================
-incremental:true
 
-```r
-library(car)
-durbinWatsonTest(fit_final)
-```
 
+<<<<<<< HEAD
 ```
  lag Autocorrelation D-W Statistic p-value
    1      0.06134832      1.796144   0.364
  Alternative hypothesis: rho != 0
 ```
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f
 
-```r
-vif(fit_final)
-```
 
 ```
-      wt       am  log(hp) 
-3.806564 2.108117 2.250186 
+Error in setwd("~/R Intro/bza-r-intro/code") : 
+  cannot change working directory
 ```
+<<<<<<< HEAD
 
 
 
@@ -1439,3 +862,5 @@ incremental:true
 
 
 
+=======
+>>>>>>> ea509634cab6979741e6dd79743759821aef4f0f

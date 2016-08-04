@@ -7,10 +7,9 @@ output:
     title: "R Intro"
     theme: united
     highlight: sunburst
-    theme.chooser: TRUE
+    theme.chooser: FALSE
     highlight.chooser: FALSE
-
-
+    menu: FALSE
 ---
 # Introductory Data Munging in R
 ## First things first: RStudio
@@ -41,19 +40,25 @@ If at any point in time you are confused about a function in R, you can use the 
 ```?install.packages```
 
 ## Importing Data
-We'll be using a DMEF dataset, which is mostly online shopping data (some phone and mail transactions too). Let's import the data first. If you're using RStudio, both of these steps can be performed using the GUI, and the code will be generated for you.
+### Setting your working directory in RStudio
+We'll be using a DMEF dataset, which is mostly online shopping data (some phone and mail transactions too). Let's import the data first. If you're using RStudio, both navigating to the working directory and importing the file can be performed using the GUI, and the code will be generated for you.
 
+![Navigating to the working directory](img/setwd.png)
+
+### Importing a file using RStudio
 The read.csv function takes in a csv file and imports it into R. If the file is in your working directory, you will only need the name of the file. If you are trying to import the file from another folder, as shown below, you will need to specify the file path.
+
+![Navigating to the working directory](img/import.png)
 
 The '<-' operator is used to store data in a variable. 
 ```{r}
 # Navigating to your working directory (GUI)
-# setwd("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/code")
-setwd("~/R Intro/bza-r-intro/code")
+setwd("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/code")
+#setwd("~/R Intro/bza-r-intro/code")
 
 # Loading the file (GUI)
-# dmef_dataset <- read.csv("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/data/dmef_dataset.csv")
-dmef_dataset <- read.csv("~/R Intro/dmef_dataset.csv")
+dmef_dataset <- read.csv("C:/Users/Ken/Dropbox/Academics/2016/Sem2/R Intro/bza-r-intro/data/dmef_dataset.csv")
+#dmef_dataset <- read.csv("~/R Intro/dmef_dataset.csv")
 ```
 
 So the code above loads the csv data and saved it to the 'dmef_dataset' variable.
@@ -380,7 +385,10 @@ bar <- bar1[,.(bar1[,N], bar2[,N])]
 #Next, we'll convert it to a matrix and invert it, and just insert it into the barplot function
 
 bar <- as.matrix(t(bar))
-barplot(bar, col=c("darkblue","red"), ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
+barplot(bar, 
+        names = bar2[,as.character(PRODUCT_CATEGORY_ID)],
+        col = c("darkblue","red"), 
+        ylim = c(0, max(dmef_small[, .N, by = PRODUCT_CATEGORY_ID][,N])))
 legend("top", legend = c("Returned", "Not Returned"), fill = c("darkblue", "red"))
 ```
 
@@ -410,7 +418,8 @@ data(mtcars)
 
 library(data.table)
 mtcars <- as.data.table(mtcars)
-
+```
+```{r, eval=FALSE}
 # Find out more about this dataset
 ?mtcars
 ```
@@ -423,7 +432,7 @@ fit <- lm(mpg ~ ., data = mtcars)
 summary(fit)
 ```
 
-By including all the variables, we get a decent model with an adjusted R-squared of 0.8066. However, we note that the p-values are all rather high. This indicates that the model can be improved by removing some of these regressors.
+By including all the variables, we get a decent model with an adjusted R-squared of 0.8066. However, we note that the p-values are all rather high. This indicates that the model can be improved by removing some of these regressors. We start by removing cyl which has the highest p-value.
 
 ```{r}
 # Removing the regressor with the highest p-value
@@ -467,7 +476,12 @@ fit_final <- lm(mpg ~ wt + am + log(hp), data=mtcars)
 summary(fit_final)
 ```
 
-However, having a good fot for the regression model is not all that matter. You need to check if your four regression assumptions are met. The four are normality, homoscedasticity, linearity and independence of errors. The independence of errors assumption generally applies to time series data.
+However, having a good fit for the regression model is not all that matters. You need to check if your four regression assumptions are met. The four assumptions include:
+
+- normality
+- homoscedasticity
+- linearity 
+- independence of errors (generally applies to time series data)
 
 ```{r}
 # Regression Assumptions
@@ -478,33 +492,20 @@ The first plot tests your assumptions for linearity and homoscedasticity. Firstl
 
 The second plot is used to test for normality. The regression assumes that the data points follow a normal distribution and if this is the case the data points on the QQ plot should closely align to the line on the chart. In this plot we can see that this is so and hence we can hold the assumption for normality.
 
-The last chart measures cook's distance, which is the acceptable range for outliers. the red dotted line at the corner measures limit for outliers, and since none of our data points reside outside that line, we can accept this regression model.
+The last chart measures Cook's distance, which is the acceptable range for outliers. the red dotted line at the corner measures limit for outliers, and since none of our data points reside outside that line, we can accept this regression model.
 
 ```{r}
 library(car)
-durbinWatsonTest(final_fit)
+durbinWatsonTest(fit_final)
 ```
 
-The last test is the test for independence of errors. This generally only applies to data collected over a period of time to ensure that each data point is indepedent of each other. For this, we run the Durbin Watson test. As long as the Durbin Watson Statistic is between 1.5 and 2.5, the assumption for independence of errors is valid.
+The last test is the test for independence of errors. This tends to be a significant problem with time series data, where yesterday's stock price has a high chance of affecting today's price. To test for this, we run the Durbin Watson test. As long as the Durbin Watson Statistic is between 1.5 and 2.5, the assumption for independence of errors is valid.
 
 ```{r}
 # Check for multi-collinearity
 # Anything below 10 is okay
-# install.packages('car')
 library(car)
 vif(fit_final)
 ```
 
 Lastly, if two variables in your regression model are highly correlated, it can affect the outcome of your regression. Hence, we run the Variance Inflation Factor test to ensure that the variables used in your regression model are not correlated. As long as all of the vif values are less than 10, the regression model will hold.
-
----TODO---
-
-## Appendix
-
-### Stats to brush up on
-
-### Helpful shortcuts in RStudio
-
-### Other functions to check out
-
----TODO---
