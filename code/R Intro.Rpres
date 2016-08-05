@@ -19,9 +19,15 @@
 .big {
   font-size: 10em;
 }
+.red .reveal .state-background {
+  background: #C10C05;
+} 
+
 </style>
 
-
+```{r setup, include=FALSE}
+opts_chunk$set(cache=TRUE)
+```
 Welcome to BT1101.1
 ========================================================
 author: 
@@ -37,8 +43,8 @@ incremental: true
 - Zhen Xuan
 - Jin Wei
 - Rhynade
-- Selina
 - Jian Sheng
+- Gin Wen
 
 Analytics, Schmanalytics
 ========================================================
@@ -91,6 +97,19 @@ setwd("~/R Intro/bza-r-intro/code")
 dmef_dataset <- read.csv("~/R Intro/dmef_dataset.csv")
 ```
 
+Building Blocks
+========================================================
+incremental: true
+class:smaller-code
+```{r}
+r101 <- c(1,2,3,4)
+r101
+class(r101)
+as.character(r101)
+class(r101)
+r102 <- data.frame(r101, r101)
+class(r102)
+```
 Tabling Frames
 ========================================================
 incremental: true
@@ -116,8 +135,12 @@ dmef_dataset
 Let's Try That Again
 ========================================================
 incremental:true
-```{r, results = "hide"}
+class: small-code
+```{r}
 View(dmef_dataset)
+```
+```{r}
+colnames(dmef_dataset)
 ```
 
 Maybe Not All At Once
@@ -364,23 +387,24 @@ Price Tag
 transition:fade
 incremental: true
 class: small-code
-```{r, results = "hold"}
+```{r, echo=FALSE}
 returned.object.price <- uniq.object.price[PRODUCT_NO %in% returned[, PRODUCT_NO]]
 
 not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]
 ```
-```{r, results="hold", eval=FALSE}
+```{r, results="hold", echo=FALSE}
 returned.object.price
 not.returned.object.price
 ```
 
 Price Tag
 ========================================================
-class: small-code
 transition: fade
-```{r, results="hold", echo=FALSE}
-returned.object.price
-not.returned.object.price
+incremental:true
+```{r, results="hold", eval = FALSE}
+returned.object.price <- uniq.object.price[PRODUCT_NO %in% returned[, PRODUCT_NO]]
+
+not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]
 ```
 
 Boxing Day
@@ -531,6 +555,7 @@ legend("top", legend = c("Returned", "Not Returned"),
 Just Kidding
 ========================================================
 class:small-code
+incremental: true
 ```{R}
 perc.returned.by.cat <- dmef_small[order(PRODUCT_CATEGORY_ID), 
                                    .(Percentage.Returned=.SD[RETN_QTY>0, .N]/.N*100),
@@ -550,6 +575,13 @@ barplot(perc.returned.by.cat[, Percentage.Returned],
         main = "Percentage of orders returned by category")
 ```
 
+Almost Done
+========================================================
+title: false
+type: red
+<div class="midcenter" style="margin-left:-300px; margin-top:-350px;">
+<img src="almost.png" style="background-color:transparent; border:0px; box-shadow:none;"></img>
+</div>
 Final Boss
 ========================================================
 incremental: true
@@ -656,6 +688,53 @@ vif(fit_final)
 
 
 
+
+
+
+Phase III
+========================================================
+incremental:true
+```{r}
+library(ggplot2)
+library(plotly)
+library(choroplethr)
+library(zipcode)
+library(choroplethrMaps)
+library(webshot)
+library(networkD3)
+```
+
+Showing Off
+========================================================
+incremental:true
+```{r, echo = FALSE, fig.align = 'center', fig.width = 12, fig.height = 8}
+cars <- as.data.table(mtcars)
+cars[,Model := row.names(mtcars)]
+p <- ggplot(data = cars, aes(x = mpg, y = hp)) + geom_point(aes(text = paste("Model:", Model))) + geom_smooth()
+p
+```
+Showing Off
+========================================================
+incremental:true
+```{r, echo = FALSE, fig.align = 'center', eval = FALSE}
+data("zipcode")
+data("state.regions")
+state.regions <- as.data.table(state.regions)
+zipcode <- as.data.table(zipcode)
+zip.state <- zipcode[,.(zip, state)]
+zip.pop <- as.data.table(dmef_dataset)[,.(ZIP, CUSTNO, EXT_PRICE, QUANTITY)][,.N, by = ZIP]
+zip.state.pop <- zip.pop[, state := zip.state[ZIP %in% zip][,state]]
+state.pop <- zip.state.pop[,sum(N),by=state]
+states <- state.pop[, names := state.regions[abb %in% state][,region]][,.(names, V1)]
+state <- state.regions[,"value" := ifelse(region %in% states[,names], 
+                                          states[names %in% region][,V1],
+                                          0)
+                       ][,.(region, value)]
+state_choropleth(state)
+```
+<div class="midcenter" style="margin-left:-500px; margin-top:-281.5px;">
+<img src="map.png" style="background-color:transparent; border:0px; box-shadow:none;"></img>
+</div>
 
 
 
