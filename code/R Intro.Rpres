@@ -44,7 +44,7 @@ incremental: true
 - Jin Wei
 - Rhynade
 - Jian Sheng
-- Gin Wei
+- Gin Wen
 
 Analytics, Schmanalytics
 ========================================================
@@ -106,7 +106,7 @@ r101 <- c(1,2,3,4)
 r101
 class(r101)
 as.character(r101)
-as.vector(r101)
+class(r101)
 r102 <- data.frame(r101, r101)
 class(r102)
 ```
@@ -135,8 +135,12 @@ dmef_dataset
 Let's Try That Again
 ========================================================
 incremental:true
+class: small-code
 ```{r}
 View(dmef_dataset)
+```
+```{r}
+colnames(dmef_dataset)
 ```
 
 Maybe Not All At Once
@@ -383,23 +387,24 @@ Price Tag
 transition:fade
 incremental: true
 class: small-code
-```{r, results = "hold"}
+```{r, echo=FALSE}
 returned.object.price <- uniq.object.price[PRODUCT_NO %in% returned[, PRODUCT_NO]]
 
 not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]
 ```
-```{r, results="hold", eval=FALSE}
+```{r, results="hold", echo=FALSE}
 returned.object.price
 not.returned.object.price
 ```
 
 Price Tag
 ========================================================
-class: small-code
 transition: fade
-```{r, results="hold", echo=FALSE}
-returned.object.price
-not.returned.object.price
+incremental:true
+```{r, results="hold", eval = FALSE}
+returned.object.price <- uniq.object.price[PRODUCT_NO %in% returned[, PRODUCT_NO]]
+
+not.returned.object.price <- uniq.object.price[PRODUCT_NO %in% not.returned[, PRODUCT_NO]]
 ```
 
 Boxing Day
@@ -550,6 +555,7 @@ legend("top", legend = c("Returned", "Not Returned"),
 Just Kidding
 ========================================================
 class:small-code
+incremental: true
 ```{R}
 perc.returned.by.cat <- dmef_small[order(PRODUCT_CATEGORY_ID), 
                                    .(Percentage.Returned=.SD[RETN_QTY>0, .N]/.N*100),
